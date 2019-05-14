@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>CommonJS及其内置模块的使用 | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="NODE,node,js,commonJS,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2016-07-06
+    </span>
+    
+      <span>
+        | <a href="/myblog/categories/NODE/"><i class="fa fa-bookmark"></i>NODE</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    CommonJS及其内置模块的使用
+  </h1>
+  
+  <article class="passage-article">
+    <ol>
+<li>npm是从npm官网下载包的；</li>
+<li>yarn</li>
+<li>bower是从github上面下载安装包的；</li>
+</ol>
+<h4 id="在本地项目当中基于npm-yarn安装第三方模块"><a href="#在本地项目当中基于npm-yarn安装第三方模块" class="headerlink" title="在本地项目当中基于npm/yarn安装第三方模块"></a>在本地项目当中基于npm/yarn安装第三方模块</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 在本地项目中创建一个package.json的文件，目的是把当前项目所有依赖的第三方模块信息(包含模块名称以及版本信息)都记录下来，可以在这里配置一些可执行的命令脚本等</span><br><span class="line">2. 安装</span><br><span class="line">3. 跑环境，部署的时候</span><br></pre></td></tr></table></figure>
+<h5 id="package-json"><a href="#package-json" class="headerlink" title="package.json"></a>package.json</h5><p>基于yarn安装会默认生成一个package.json，只是信息没有手动创建的全面，所以我们一般都手动创建：</p>
+<p><code>npm init -y</code>        //加Y是为了一路都走默认值，无需询问</p>
+<p><strong>意义：</strong>开发项目的时候我们首先生成一个package.json，当我们安装第三方模块的时候把安装的模块信息记录到配置清单当中，这样以后不管是团队协作开发还是项目部署上线，我们都没有必要上传node_modules大文件上传，只需要上传配置清单，别人在使用的时候在自己的电脑中跑下环境即可</p>
+<p>创建配置清单的时候不能出现中文，这样有可能识别不了</p>
+<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><p>开发依赖：只有在项目开发阶段依赖的第三方模块</p>
+<p>生产环境：项目部署实施的时候，也需要依赖的第三方模块</p>
+<p>npm install xxx —save     //保存到配置清单的生产依赖中</p>
+<p>npm install XXX —save-dev    //保存到配置清单的开发依赖中</p>
+<p>yarn add XXX     //默认安装到生产依赖中</p>
+<p>yarn add XXX —dev/-D    //安装到开发依赖中</p>
+<h5 id="跑环境"><a href="#跑环境" class="headerlink" title="跑环境"></a>跑环境</h5><p>直接<strong>npm install /yarn install</strong>，npm会自己先检测目录中是否有package.json文件，如果有就会按照文件中的配置清单依次安装；</p>
+<h4 id="安装到本地和全局的区别："><a href="#安装到本地和全局的区别：" class="headerlink" title="安装到本地和全局的区别："></a>安装到本地和全局的区别：</h4><p>安装到全局的特点：</p>
+<ul>
+<li>所有的项目都可以使用这个模块，容易导致版本冲突</li>
+<li>安装在全局的模块，不能基于CommonJS模块规范调取使用</li>
+</ul>
+<p>安装到本地的特点：</p>
+<ul>
+<li>只能当前项目使用这个模块</li>
+<li>可以基于CommonJS模块规范调取使用</li>
+<li>不能直接使用命令操作，全局的可以使用命令</li>
+</ul>
+<p>为什么安装在全局下可以使用命令？</p>
+<p>npm root /-g 查看本地项目或者全局环境下，npm的安装目录</p>
+<p><strong>nvm切换node版本；（nvm ls;nvm use 8;）</strong></p>
+<p>安装在全局目录下的模块，大部分都会生成一个XXX.cmd的文件，只要有这个文件，那么XXX就是一个可以执行的（例如：yarn.cmd=&gt;yarn就是命令）</p>
+<p>既可以安装在本地，也可以使用命令操作：</p>
+<ol>
+<li>配置package文件中的执行脚本</li>
+<li>把模块安装在本地，如果是支持命令操作的（会在node_modules的bin中生成一个xxx.cmd的命令文件，只不过这个文件无法在全局下执行，所以不能直接用命令）</li>
+<li>安装完成后，在package.json中的scripts中配置需执行的命令脚本，“eva”:”lessc -v”属性名自己设置即可，属性值是需要执行的命令脚本，根据需要自己编写即可（可以配置很多命令）</li>
+<li>npm  run  eva/yarn eva这样的操作就是把配置脚本执行</li>
+</ol>
+<ul>
+<li>首先到配置清单中的script中查找</li>
+<li>找到把后面对应的属性值（脚本）执行</li>
+<li>执行脚本的时候回到node_modules中的bin文件中查找,没有的话，再向npm安装的全局目录中去找</li>
+</ul>
+<h3 id="node入门"><a href="#node入门" class="headerlink" title="node入门"></a>node入门</h3><p>node本身就是基于CommonJS模块规范设计的，所以模块是node的组成</p>
+<ul>
+<li>内置模块：NODE天生提供给js调取使用的</li>
+<li>第三方模块：别人写好的，我们可以基于npm安装使用</li>
+<li>自定义模块：自己创建的一些模块</li>
+</ul>
+<p>CommonJs模块化设计思想（AMD/CMD/ES6 MODULE都是模块设计思想）</p>
+<ul>
+<li><strong>规定每一个JS都是一个单独的模块</strong>===&gt;模块是私有的，里面涉及的值和变量以及函数等都是私有的，和其他的js文件是不冲突的</li>
+<li>CommonJS 中可以允许模块中的方法互相调用；<ul>
+<li>B模块想导入A模块的方法<ul>
+<li>A导出</li>
+<li>B导入</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>【导出】：</p>
+<p>CommonJS给每一个模块都设置了内置的变量/属性/方法</p>
+<ul>
+<li><strong>module：代表当前这个模块对象</strong></li>
+<li><strong>module.exports：提供的一个属性</strong>，用来导出属性方法的</li>
+<li><strong>exports：是内置的变量</strong>，也是用来导出当前模块属性方法的，虽然和module.exports不是一个东西，但是他俩代表的值是同一个，值都是对象（module.exports === exports）,指向的是同一个堆内存地址</li>
+</ul>
+<p>【导入】：</p>
+<p><strong>require</strong>： CommonJS提供的内置变量，用来导入模块（其实导入的就是module.exports暴露出来的东西，导入的值也是[object]类型的）</p>
+<p><strong>require是一个同步操作</strong>： let temp1 = require(‘./temp1.js’)；首先是把temp1中的代码从上到下执行一遍，吧exports对应的对内存导入进来，只有把导入的模块代码执行完成，才可以获取值，然后继续执行本模块下面的代码；</p>
+<h3 id="CommonJS特点"><a href="#CommonJS特点" class="headerlink" title="CommonJS特点"></a>CommonJS特点</h3><ol>
+<li><strong>所有代码都运行在模块作用域</strong>，不会污染全局作用域（每一个模块都是私有的，包括里面的东西都是私有的，不会和其他模块产生干扰）</li>
+<li><strong>模块可以多次加载，但是只会在第一次加载时运行一次</strong>，然后运行结果就被缓存了，以后在加载，就直接地取缓存结果，要想让模块再次运行，必须清理缓存；<strong>为了保证性能</strong>，减少模块代码重复执行的次数</li>
+<li>模块加载的顺序，按照其在在代码中出现的循序；<strong>CommonJS规范加载模块是同步的</strong>，也就是说，只有加载完成，才能执行后面的操作，而AMD是非同步的</li>
+</ol>
+<p>默认和module.exports是同一个堆内存，但是exports= {}是让exports指向一个新的内存，module.exports不受影响</p>
+<p>require(‘XXX’)</p>
+<p>require(‘XXX’),首先到当前项目node_modules下去找，不存在去找node提供的内置模块（导入第三方或者内置的）</p>
+<p>__dirname:表示当前模块所在的绝对路径（物理路径）；</p>
+<p>__filename: 相对于__dirname来说，多了模块名称；</p>
+<h3 id="内置模块："><a href="#内置模块：" class="headerlink" title="内置模块："></a>内置模块：</h3><h4 id="FS-实现I-O操作"><a href="#FS-实现I-O操作" class="headerlink" title="FS[实现I/O操作]"></a>FS[实现I/O操作]</h4><p>let fs = require(‘fs’);</p>
+<p><strong>fs.readdir/readdirSync</strong>:读取文件夹操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fs.readdirSync(&apos;./&apos;);    //同步读取</span><br><span class="line">fs.readdir(&apos;./&apos;, (err,files) =&gt; &#123;</span><br><span class="line">    err ? console.log(err) : null;</span><br><span class="line">    console.log(files); //返回的结果是一个数组[ &apos;a.js&apos;, &apos;b.js&apos;, &apos;c.js&apos;, &apos;fs.js&apos;, &apos;js&apos; ]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>fs.mkdir/fs.mkdirSync：创建文件夹/同步创建</strong>，带sync是同步，不带就是异步操作，想要是先无阻塞的I/O操作，我们一般都是用异步操作来完成要处理的事情</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 读取文件中的内容</span><br><span class="line">fs.readFile();</span><br><span class="line">fs.writeFile(); //向文件中写入内容（覆盖写入：写入新的内容会替换原有的内容）</span><br><span class="line">fs.appendFile();//追加写入新内容，原有内容还在</span><br><span class="line">fs.watchFile();</span><br><span class="line">fs.copyFile();  //拷贝文件到新的位置</span><br><span class="line">fs.unlink();//删除文件</span><br><span class="line">fs.access:用来验证权限</span><br><span class="line">fs.rmdir();  //如果目录有文件，则不能直接删除</span><br><span class="line">fs.rmdirSync();*/</span><br></pre></td></tr></table></figure>
+<h4 id="PATH模块"><a href="#PATH模块" class="headerlink" title="PATH模块"></a>PATH模块</h4><h4 id="URL模块"><a href="#URL模块" class="headerlink" title="URL模块"></a>URL模块</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let url = require(&apos;url&apos;);</span><br><span class="line"></span><br><span class="line">console.log(url.parse(&apos;http://www.zhufengpeixun.cn/main/guide/index.html?from=qq&amp;ls=stu#video&apos;, true));</span><br></pre></td></tr></table></figure>
+<p>parse()第二个参数设置为true：<br>query参数是一个对象，里面是对象键值对的模式，常用的都是加true </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Url &#123;</span><br><span class="line">protocol: &apos;http:&apos;, 协议</span><br><span class="line">slashes: true, 是否有双斜线</span><br><span class="line">auth: null,作者</span><br><span class="line">host: &apos;www.zhufengpeixun.cn&apos;,域名+端口</span><br><span class="line">port: null,端口</span><br><span class="line">hostname: &apos;www.zhufengpeixun.cn&apos;,  域名</span><br><span class="line">hash: &apos;#video&apos;,    //hash值</span><br><span class="line">search: &apos;?from=qq&amp;ls=stu&apos;, 问号传参</span><br><span class="line">query: &apos;from=qq&amp;ls=stu&apos;,   问号传参的不带问号</span><br><span class="line">pathname: &apos;/main/guide/index.html&apos;, 请求资源的路径名称</span><br><span class="line">path: &apos;/main/guide/index.html?from=qq&amp;ls=stu&apos;,</span><br><span class="line">href: &apos;http://www.zhufengpeixun.cn/main/guide/index.html?from=qq&amp;ls=stu#video&apos; &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="HTTP模块"><a href="#HTTP模块" class="headerlink" title="HTTP模块"></a>HTTP模块</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let http = require(&apos;http&apos;);</span><br><span class="line">let server = http.createServer();//创建服务</span><br><span class="line">server.listen();//监听端口号</span><br></pre></td></tr></table></figure>
+<p>对应好协议域名，端口等信息，</p>
+<p>http:localhost:8080/…服务在电脑上，localhost本机域名了，也就是本机的客户端浏览器，访问本机的服务端程序</p>
+<p><a href="http://ip:8686/.." target="_blank" rel="noopener">http://ip:8686/..</a>.</p>
+<p>IP做域名访问，如果是内网IP，相同局域网下的用户可以访问这个服务，如果是外网IP，所有能联网的基本上都可以访问这个服务,局域网下访问需要互相关掉防火墙</p>
+<h4 id="createServer"><a href="#createServer" class="headerlink" title="createServer"></a>createServer</h4><ul>
+<li>当服务创建成功，并且客户端相当前服务器发送了请求，才会执行回调函数，并且发送一次请求，回调函数会被处罚执行一次</li>
+<li>服务器上有一堆项目代码，这对代码既可能有服务端的程序代码，也有可能有客户端的程序代码，而客户端程序代码一般我们都放到static这个文件夹中</li>
+<li>我们创建的web服务，需要处理两类请求，第一类属于静态资源文件的请求处理，第二类属于API 接口的请求处理，一个是要文件，一个是要数据，区别在于是否有后缀名，</li>
+</ul>
+<p><strong>req.url</strong>请求资源的路径地址及问号传参,不包含hash值</p>
+<p><strong>req.methods</strong> 客户端的请求方式，如GET</p>
+<p><strong>req.headers</strong>客户端的请求头信息，是一个对象</p>
+<p><strong>res.write</strong>基于这个方法服务器端可以向客户端返回内容</p>
+<p><strong>res.end</strong>结束响应</p>
+<p><strong>res.writeHead</strong>重写响应头信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eg: res.end(&apos;hello word&apos;);服务器端返回给客户端的内容一般都是String或者Buffer格式的数据</span><br></pre></td></tr></table></figure>
+<p>如果是JSON格式的，使用JSON.stringify()转成json格式的字符串；</p>
+<p>如果响应主体是汉字，做处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">res.writeHead(200, &#123;</span><br><span class="line"></span><br><span class="line">        &apos;content-type&apos;: &apos;text/plain;charset=utf-8&apos;</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    res.end(&apos;我我我&apos;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let &#123; pathname, query &#125; = url.parse(req.url, true);</span><br><span class="line">console.log(pathname, query);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let &#123; url, method, headers &#125; = req;</span><br><span class="line">let &#123; url, method, headers &#125; = res;</span><br><span class="line">console.log(url, method, headers);</span><br><span class="line">console.log(req);</span><br><span class="line">console.log(res);</span><br></pre></td></tr></table></figure>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#在本地项目当中基于npm-yarn安装第三方模块"><span class="toc-text">在本地项目当中基于npm/yarn安装第三方模块</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#package-json"><span class="toc-text">package.json</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#安装"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#跑环境"><span class="toc-text">跑环境</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装到本地和全局的区别："><span class="toc-text">安装到本地和全局的区别：</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#node入门"><span class="toc-text">node入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CommonJS特点"><span class="toc-text">CommonJS特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内置模块："><span class="toc-text">内置模块：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#FS-实现I-O操作"><span class="toc-text">FS[实现I/O操作]</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PATH模块"><span class="toc-text">PATH模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#URL模块"><span class="toc-text">URL模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HTTP模块"><span class="toc-text">HTTP模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#createServer"><span class="toc-text">createServer</span></a></li></ol>
+  </li></div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/2016/commonJS/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/node-js-commonJS/"><i class="fa fa-tags"></i>node,js,commonJS</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/2016/git1/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/2016/ES6/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

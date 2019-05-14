@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>定时器和异步编程 | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="JS,js,setTimeout,同步，异步,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2017-05-12
+    </span>
+    
+      <span>
+        | <a href="/myblog/categories/JS/"><i class="fa fa-bookmark"></i>JS</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    定时器和异步编程
+  </h1>
+  
+  <article class="passage-article">
+    <h4 id="定时器：-设定一个定时器，并且设定了等到的时候，当到达设定的时间，浏览器执行对应的方法"><a href="#定时器：-设定一个定时器，并且设定了等到的时候，当到达设定的时间，浏览器执行对应的方法" class="headerlink" title="定时器： 设定一个定时器，并且设定了等到的时候，当到达设定的时间，浏览器执行对应的方法"></a>定时器： 设定一个定时器，并且设定了等到的时候，当到达设定的时间，浏览器执行对应的方法</h4><p>[function]： 到达时间后执行的方法—设置定时器的时候方法没有执行，到时间浏览器才帮我们执行<br>[interval]： 时间因子（需要等待的时间MS毫秒）<br><code>setTimeout([function],(interval))</code></p>
+<blockquote>
+<p>执行一次的定时器</p>
+</blockquote>
+<p><code>setInterval([function],(interval))</code></p>
+<blockquote>
+<p>可执行多次的定时器</p>
+</blockquote>
+<ul>
+<li><p>清除定时器：<br>clearInterval/clearTimeout：这两个方法中的任何一个都可以清楚用任何方法创建的定时器,根据序号清楚浏览器中设定的定时器<br>设置定时器会有一个返回值这个值是一个数字，属于定时器的编号代表当前设置的是第几个定时器，不管是基于setTimeout还是setInterval创建的定时器，这个编号（是唯一的）会接着累加;</p>
+</li>
+<li><p>js中的同步编程和异步编程：<br>同步编程：任务是按照顺序依次处理，当前事件没有完成下一个事件无法执行（循环for…都是同步的）<br>异步编程： 当期那这件事没有彻底做完，需要等待一段时间，此时我们不等，继续执行下面的任务，当下面的任务完成了，再去把没有彻底完成的事情完成</p>
+<ol>
+<li>所有的时间绑定都是异步的</li>
+<li>所有的定时器都是异步的</li>
+<li>JAXA中一般都是用异步编程处理</li>
+<li>回调函数也算是异步编程</li>
+</ol>
+</li>
+</ul>
+<h5 id="定时器设定一个时间，到达时间后不一定执行，比如遇到了死循环，他设定的时间是一个最小时间，如果当前还有其他的同步任务需要执行，那么它还是需要等着"><a href="#定时器设定一个时间，到达时间后不一定执行，比如遇到了死循环，他设定的时间是一个最小时间，如果当前还有其他的同步任务需要执行，那么它还是需要等着" class="headerlink" title="定时器设定一个时间，到达时间后不一定执行，比如遇到了死循环，他设定的时间是一个最小时间，如果当前还有其他的同步任务需要执行，那么它还是需要等着"></a>定时器设定一个时间，到达时间后不一定执行，比如遇到了死循环，他设定的时间是一个最小时间，如果当前还有其他的同步任务需要执行，那么它还是需要等着</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">let n = 0;</span><br><span class="line">setTimeout(()=&gt;&#123;</span><br><span class="line">    n++;</span><br><span class="line">    console.log(n);</span><br><span class="line">&#125;, 1000)</span><br><span class="line">console.log(n);</span><br><span class="line">while(1===1) &#123;</span><br><span class="line">    //死循环</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="浏览器是如何规划同步异步机制的"><a href="#浏览器是如何规划同步异步机制的" class="headerlink" title="浏览器是如何规划同步异步机制的"></a>浏览器是如何规划同步异步机制的</h4><ol>
+<li><p><code>浏览器是多线程的，JS是单线程的，</code>（浏览器只给JS分配一个线程）且单线程一次只能处理一件事情<br>进程：每一个应用程序都可以理解为一个进程（浏览器打开一个页面就相当于开了一个进程），在一个进程中我们经常会同时做很多事，此时我们可以分配多个线程去同时完成</p>
+</li>
+<li><p>JS在单线程当中实现异步的机制主要依赖于浏览器的任务队列完成的，浏览器中有两个任务队列，<code>主任务队列</code>和<code>等待任务队列</code>；</p>
+</li>
+</ol>
+<p><strong>异步编程的原理：</strong><br>单线程的机制模拟出多线程的效果</p>
+<blockquote>
+<p>在主任务队列自上而下执行的时候，如果遇到一个异步操作任务，没有立即执行，而是把它放到等待任务里面排队</p>
+<p>当主任务完成后才会去等待任务里面去查找，如果主任务队列完不成，不管等待任务队列中是否有到达时间的，都不处理，继续等待主任务队列完成，因为JS是单线程的一次只能处理一个事情</p>
+<p>等待任务队列当中，谁达到条件了（如果都达到条件了，谁先达到的就先处理谁），就把这个任务重新放到主任务队列中执行，把这个执行完才能去等待中找下一个…</p>
+</blockquote>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#定时器：-设定一个定时器，并且设定了等到的时候，当到达设定的时间，浏览器执行对应的方法"><span class="toc-text">定时器： 设定一个定时器，并且设定了等到的时候，当到达设定的时间，浏览器执行对应的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#定时器设定一个时间，到达时间后不一定执行，比如遇到了死循环，他设定的时间是一个最小时间，如果当前还有其他的同步任务需要执行，那么它还是需要等着"><span class="toc-text">定时器设定一个时间，到达时间后不一定执行，比如遇到了死循环，他设定的时间是一个最小时间，如果当前还有其他的同步任务需要执行，那么它还是需要等着</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#浏览器是如何规划同步异步机制的"><span class="toc-text">浏览器是如何规划同步异步机制的</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/2017/settimeout/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/js-setTimeout-同步，异步/"><i class="fa fa-tags"></i>js,setTimeout,同步，异步</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/2017/String/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/2017/var/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>
