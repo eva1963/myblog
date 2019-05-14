@@ -16,18 +16,18 @@
   const inputDOM = searchDOM.querySelector('input'),
     iconDOM = searchDOM.querySelector('i');
 
-  searchBtn.addEventListener('click', (e) => {
-    layer.style.display = 'block';
-    searchDOM.style.display = 'flex';
-    inputDOM.focus();
-    title.innerHTML = '搜索';
+  // searchBtn.addEventListener('click', (e) => {
+  //   layer.style.display = 'block';
+  //   searchDOM.style.display = 'flex';
+  //   inputDOM.focus();
+  //   title.innerHTML = '搜索';
 
-    window.AD_CONFIG.layer.add(() => {
-      title.innerHTML = '';
-      inputDOM.blur();
-      searchDOM.style.display = 'none';
-    });
-  });
+  //   window.AD_CONFIG.layer.add(() => {
+  //     title.innerHTML = '';
+  //     inputDOM.blur();
+  //     searchDOM.style.display = 'none';
+  //   });
+  // });
 
   inputDOM.addEventListener('keypress', (e) => {
     let key = e.which || e.keyCode,

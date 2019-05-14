@@ -16,7 +16,7 @@
         minute = Math.floor(((offset % 86400) % 3600) / 60),
         second = Math.floor(((offset % 86400) % 3600) % 60);
 
-      dom.innerHTML = day + "天" + hour + "时" + minute + "分" + second + "秒";
+      // dom.innerHTML = day + "天" + hour + "时" + minute + "分" + second + "秒";
     };
   }
 
