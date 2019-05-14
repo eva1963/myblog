@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>Jquery源码分析 | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="JQUERY,jquery,js,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2016-11-21
+    </span>
+    
+      <span>
+        | <a href="/myblog/categories/JQUERY/"><i class="fa fa-bookmark"></i>JQUERY</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    Jquery源码分析
+  </h1>
+  
+  <article class="passage-article">
+    <p>1.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//声明过得不会再次声明</span><br><span class="line">console.log(foo);</span><br><span class="line"></span><br><span class="line">function foo()&#123;</span><br><span class="line">console.log(&quot;foo&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var foo = 1;</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li><p><a href="undefined">一元正号</a> (+)</p>
+<p>一元正号运算符位于其操作数前面，计算其操作数的数值，如果操作数不是一个数值，会尝试将其转换成一个数值。 尽管一元负号也能转换非数值类型，但是一元正号是转换其他对象到数值的最快方法，也是最推荐的做法，因为它不会对数值执行任何多余操作。它可以将字符串转换成整数和浮点数形式，也可以转换非字符串值 <code>true</code>，<code>false</code> <code>和</code> <code>null</code>。小数和十六进制格式字符串也可以转换成数值。负数形式字符串也可以转换成数值（对于十六进制不适用）。如果它不能解析一个值，则计算结果为 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/NaN" target="_blank" rel="noopener">NaN</a>.</p>
+</li>
+<li><p>判断类型方法</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// 判断一个参数是什么类型的</span><br><span class="line">var class2type = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">// 生成class2type映射</span><br><span class="line">&quot;Boolean Number String Function Array Date RegExp Object Error&quot;.split(&quot; &quot;).map(item =&gt; &#123;</span><br><span class="line">  class2type[&quot;[object &quot; + item + &quot;]&quot;] = item.toLowerCase()</span><br><span class="line">&#125;);</span><br><span class="line">// JQ使用自己的each写的</span><br><span class="line">// jQuery.each(&quot;Boolean Number String Function Array Date RegExp Object Error&quot;.split(&quot; &quot;), function(i, name) &#123;</span><br><span class="line">//     class2type[&quot;[object &quot; + name + &quot;]&quot;] = name.toLowerCase();</span><br><span class="line">// &#125;);</span><br><span class="line"></span><br><span class="line">function type(obj) &#123;</span><br><span class="line">  // 一箭双雕</span><br><span class="line">  if (obj == null) &#123;</span><br><span class="line">      return obj + &quot;&quot;;</span><br><span class="line">  &#125;</span><br><span class="line">  return typeof obj === &quot;object&quot; || typeof obj === &quot;function&quot; ?</span><br><span class="line">      class2type[Object.prototype.toString.call(obj)] || &quot;object&quot; :</span><br><span class="line"></span><br><span class="line">      typeof obj;</span><br><span class="line">&#125;</span><br><span class="line">// console.log(type([1, 2, 3]));</span><br><span class="line">console.log(class2type);</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li><p><code>var length = &quot;length&quot; in obj &amp;&amp; obj.length</code></p>
+</li>
+<li><p>判断是否是数组：</p>
+</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">isArray: <span class="built_in">Array</span>.isArray || <span class="function"><span class="keyword">function</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> jQuery.type(obj) === <span class="string">"array"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//原生有一个自带的isArray方法，然后在做兼容</span></span><br></pre></td></tr></table></figure>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/Jquery/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/jquery-js/"><i class="fa fa-tags"></i>jquery,js</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/js3/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/second/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

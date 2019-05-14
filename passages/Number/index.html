@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>对象数据类型的常规操作 | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="JS,前端,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2016-06-25
+    </span>
+    
+      <span>
+        | <a href="/myblog/categories/JS/"><i class="fa fa-bookmark"></i>JS</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    对象数据类型的常规操作
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="对象数据类型的常规操作"><a href="#对象数据类型的常规操作" class="headerlink" title="对象数据类型的常规操作"></a>对象数据类型的常规操作</h2><h3 id="Boolean类型"><a href="#Boolean类型" class="headerlink" title="Boolean类型"></a>Boolean类型</h3><blockquote>
+<p>只有两个值：true/false</p>
+</blockquote>
+<p>如何把其他类型的数据转化为Boolean类型？</p>
+<ul>
+<li>Boolean</li>
+<li>!</li>
+<li>!!</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">数字当中只有<span class="number">0</span>和<span class="literal">NaN</span>是<span class="literal">false</span></span><br><span class="line"></span><br><span class="line">!<span class="string">'珠峰培训'</span> ==&gt;  !是先把其他数据转化为<span class="built_in">Boolean</span>，然后取反</span><br><span class="line"><span class="built_in">Boolean</span>(<span class="string">''</span>) ==&gt; <span class="literal">false</span></span><br><span class="line"><span class="built_in">Boolean</span>(<span class="number">0</span>) ==&gt; <span class="literal">false</span></span><br><span class="line"><span class="built_in">Boolean</span>(<span class="literal">NaN</span>) ==&gt; <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<h2 id="规律：-在Boolean类型中，只有以下五种的Boolean值为false：0-NaN-空字符串-null-undefined，其余都为true"><a href="#规律：-在Boolean类型中，只有以下五种的Boolean值为false：0-NaN-空字符串-null-undefined，其余都为true" class="headerlink" title="规律： 在Boolean类型中，只有以下五种的Boolean值为false：0/NaN/空字符串/null/undefined，其余都为true "></a><strong>规律： 在Boolean类型中，只有以下五种的Boolean值为false：<code>0/NaN/空字符串/null/undefined，其余都为true</code></strong> </h2><h3 id="null-amp-amp-undefined-都代表空"><a href="#null-amp-amp-undefined-都代表空" class="headerlink" title="null &amp;&amp; undefined 都代表空"></a>null &amp;&amp; undefined 都代表空</h3><blockquote>
+<ul>
+<li>null  表示空对象指针</li>
+<li>undefined   表示未定义</li>
+</ul>
+</blockquote>
+<p><strong>null一般都是意料之中的没有，通俗理解一般都是认为手动的先赋值为null，后面的程序当中会再次被赋值；</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> num = <span class="literal">null</span>;  <span class="comment">// null是手动赋值,预示着后面我会把num的值进行修改</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>undefined一般都不是认为手动控制的，大部分都是浏览器自主为空，后面可以赋值也可以不赋值；</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> num;  <span class="comment">// 此时变量的值，浏览器会分配的就是undefined</span></span><br><span class="line">后面可以赋值也可以不赋值</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="object数据对象类"><a href="#object数据对象类" class="headerlink" title="object数据对象类"></a>object数据对象类</h3><blockquote>
+<p>普通对象<br>由大括号包裹起来<br>由0到多组键值对组成</p>
+</blockquote>
+<p><code>属性是用来描述当前对象特征的；属性名(键key)是当前具备的特征，属性值(值value)是对这个特征的描述,一组属性名+属性值成为键值对</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var obj = &#123;</span><br><span class="line">name: &apos;liuhuan&apos;,</span><br><span class="line">age: 21</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="对象的操作，对键值对的增删改查；"><a href="#对象的操作，对键值对的增删改查；" class="headerlink" title="对象的操作，对键值对的增删改查；"></a>对象的操作，对键值对的增删改查；</h4><h5>【获取】</h5>
+
+<p>语法：对象.属性/对象[属性]<br>obj.name<br>obj[‘name’] 一般来说，对象的属性名都是字符串格式的，属性值是不固定的，任何格式都可以</p>
+<h5>【增/改】</h5>
+
+<p>js对象中属性名是不允许重复的，是<strong>唯一</strong>的；<br>boj.name = ‘eva’;原有对象中存在name属性，此处修改属性值；<br>boj.sex = ‘女’;原有对象中不存在sex属性，相当给当前对象新增属性；</p>
+<h5>【删除】</h5>
+
+<p>彻底删除：对象中不存在了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> obj[<span class="string">'age'</span>] <span class="comment">//对象中不存在此属性</span></span><br></pre></td></tr></table></figure>
+<p>假删除：并没有移除此属性，只是让当前属性的值为空</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">obj.sex = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+<p><code>也可以赋值为undefined，但是因为浏览器默认找不到一个属性的时候报错是undefined，如果我们赋值也是undefined的话导致我们无法区分是否有这个属性；</code></p>
+<p>如果当前对象在获取属性值得时候，如果有这个属性名可以正常获取到值，哪怕是null，但是如果没有这个属性名，则获取的结果是undefined；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//思考题：</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">name: <span class="string">'liuhuan'</span>,</span><br><span class="line">age: <span class="number">21</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">obj[<span class="string">'name'</span>]  <span class="comment">// liuhuan</span></span><br><span class="line">obj[name]  <span class="comment">//undefined   此处的name 是一个变量</span></span><br><span class="line"><span class="comment">//'name' 是一个字符串值，代表的是本身；</span></span><br><span class="line"><span class="comment">//name 是一个变量，代表的是是本身存储的值；</span></span><br></pre></td></tr></table></figure>
+<p>关于对象的一点细节知识<br>一个对象中的属性名不仅仅是字符串格式的还有可能是数字格式的；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">  name: <span class="string">'eva'</span>,</span><br><span class="line">	<span class="number">0</span>: <span class="number">100</span></span><br><span class="line">&#125;</span><br><span class="line">obj[<span class="number">0</span>] <span class="comment">// 100</span></span><br><span class="line">obj[<span class="string">'0'</span>] <span class="comment">// 100</span></span><br></pre></td></tr></table></figure>
+<p>当我们存储的属性名不是字符串也不是数字的时候，浏览器会把这个值转toString()换为字符串然后在进行存储</p>
+<p>obj[{}]=300 =&gt;  先把（{}）.toString()后的结果作为对象的属性名存储起来 obj[‘[object Object]’] = 300;<br>obj[{}]获取的时候也是先把对象转化为字符串然后在获取；</p>
+<hr>
+<p>数组对象（对象由键值对组成的）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ary = [<span class="number">12</span>,<span class="number">23</span>,<span class="number">23</span>];</span><br></pre></td></tr></table></figure>
+<p>通过观察结果，数组对象的属性名是数字，我们称之为索引；</p>
+<hr>
+<h3 id="浅析JS的运行机制"><a href="#浅析JS的运行机制" class="headerlink" title="浅析JS的运行机制"></a>浅析JS的运行机制</h3><ol>
+<li>当浏览器的内核/引擎渲染和解析JS的时候会提供一个供JS运行的环境，我们把这个环境称之为全局作用域(global scope);</li>
+<li>代码自上而下执行，在此之前还有一个变量提升阶段；<ol>
+<li>基本数据类型的值会存储在当前作用域下<h5 id="基本数据类型是按照值在操作的，把原有的值复制一份放到新的空间，和原来的值没关系了，你是你的，我是我的；"><a href="#基本数据类型是按照值在操作的，把原有的值复制一份放到新的空间，和原来的值没关系了，你是你的，我是我的；" class="headerlink" title="基本数据类型是按照值在操作的，把原有的值复制一份放到新的空间，和原来的值没关系了，你是你的，我是我的；"></a><code>基本数据类型</code>是按照值在操作的，把原有的值复制一份放到新的空间，和原来的值没关系了，你是你的，我是我的；</h5></li>
+</ol>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var a = 12有三部操作：</span><br><span class="line">  1.首先开辟一个存储空间将12放进去；</span><br><span class="line">  2.在当前作用域中声明一个变量a；</span><br><span class="line">  3.让声明的变量和存储的12进行关联； （把存储的12赋值给a，这一步复制操作叫做定义）</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>引用数据额类型的值不能直接存储到当前的作用域中（因为可能存储的内容过于复杂），我们需要先开辟一个新的空间（理解为仓库），把内容存储到这个空间中；</li>
+</ol>
+<h5 id="引用数据类型不是按值在操作的，他操作的是空间引用地址，把原来空间的地址赋值给新的变量，但是原来的空间没有被克隆，这样就会出现多个变量关联的是相同的空间，相互之间就会有影响了；"><a href="#引用数据类型不是按值在操作的，他操作的是空间引用地址，把原来空间的地址赋值给新的变量，但是原来的空间没有被克隆，这样就会出现多个变量关联的是相同的空间，相互之间就会有影响了；" class="headerlink" title="引用数据类型不是按值在操作的，他操作的是空间引用地址，把原来空间的地址赋值给新的变量，但是原来的空间没有被克隆，这样就会出现多个变量关联的是相同的空间，相互之间就会有影响了；"></a><code>引用数据类型</code>不是按值在操作的，他操作的是空间引用地址，把原来空间的地址赋值给新的变量，但是原来的空间没有被克隆，这样就会出现多个变量关联的是相同的空间，相互之间就会有影响了；</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var obj1 = &#123;n:100&#125;</span><br><span class="line">1.首先安开辟一个新的内存空间，把对象中的键值对一次存储起来（为了保证后来能够找到这个空间，从空间有个16进制的地址）；</span><br><span class="line">2.声明一个变量</span><br><span class="line">3.让变量和地址关联在一起，把空间地址赋值给变量</span><br></pre></td></tr></table></figure>
+<ul>
+<li>栈内存： 本身就是一个供js代码执行的环境，所有的基本类型的值都会直接在这里面开辟一个位置进行存储</li>
+<li>堆内存： 用来存储引用类型中的信息值的，对象存储的是键值对，函数存储的是代码字符串</li>
+</ul>
+<hr>
+<h3 id="JS中的判断语句"><a href="#JS中的判断语句" class="headerlink" title="JS中的判断语句"></a>JS中的判断语句</h3><p>只要有一个判断条件成立了，不管后面是否还有成立的条件，都不在判断执行了</p>
+<blockquote>
+<p>不管if条件中写什么，最后总要将其计算出布尔类型的，来判断条件是否执行；<br>把其他值转换为Boolean值为false的只有五种：<code>0，NaN，null,undefined,控制符串；</code></p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="string">'3px'</span>+<span class="number">3</span>)&#123;</span><br><span class="line">    <span class="comment">//在JS中，加减乘除都是数学运算，除"+"以外，其余的运算符在计算的饿时候遇到了非数字类型，首先会转换为数字类型（Number），然后再进行计算，</span></span><br><span class="line">    <span class="comment">//+ 在JS中除了数学相加，还有字符串拼接的作用，如果运算中遇到了字符串，则为字符串拼接；</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对象转为数字类型为NAN；字符也是；</p>
+<h3 id="typeof（运算符）"><a href="#typeof（运算符）" class="headerlink" title="typeof（运算符）"></a>typeof（运算符）</h3><p>在JS当中用来检测数据类型的方式之一，除此之外还有：</p>
+<ul>
+<li>instanceof   运算符</li>
+<li>constructor   方法</li>
+<li>Object.prototype.toString.call()    方法</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">语法 type [value]</span><br><span class="line"></span><br><span class="line">返回值： 使用<span class="keyword">typeof</span>检测出来的结果是一个字符串，字符串中包含着对应的数据类型，例如：<span class="string">'Number'</span>，</span><br><span class="line"></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">null</span> -&gt; <span class="comment">//'object'  因为null代表的是空对象指针，没有指向任何的内存空间</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typeof</span> 检测数组、正则、对象，最后返回的都是<span class="string">'object'</span>，也就是基于这种方式无法细分对象；</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>三元运算符<blockquote>
+<p>语法： 条件？成立:不成立;  相当于简单的if，else语句</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>如果三元运算符当中的某一部分不需要做任何处理，我们用null或者undefined或者void 0…占位即可，但是不可不写，不写报错；<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> num =<span class="number">12</span>;</span><br><span class="line">num&gt;<span class="number">10</span>?num++:num--;</span><br><span class="line">num&gt;<span class="number">10</span>?num++:<span class="literal">null</span>;</span><br><span class="line"><span class="comment">//如果需要执行多条语句，则用括号包起来，语句之间用逗号隔开</span></span><br><span class="line">num&gt;=<span class="number">10</span>?(num++,num*=<span class="number">10</span>):<span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="3">
+<li>switch case<blockquote>
+<p>JS中的一种判断方式<br>switch case应用于一个变量或者表达式在不同值情况下的不同操作，每种情况结束都要加break，结束整个判断；</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>特殊性：每一种case比较都是基于’===’绝对相等来完成的；</li>
+</ul>
+<p><strong>‘10’ == 10  –&gt;  相等比较，如果等号两边的值的类型不一样，先转换为同一种类型在进行比较，当前案例中就是把字符串’10’转化为数字10，然后再进行比较；</strong><br><strong>‘10’ === 10  –&gt;  绝对比较，如果等号两边的值的类型不一样，则直接不相等，他要求类型的值都完全一样才相等（真实项目中为了保护代码的严谨性，我们更应该更多的使用绝对比较）</strong></p>
+<p><code>不加break，后面的条件是否成立都会被执行，利用此机制，我们可以完成一些特殊的处理，例如如果num=10和等于5都要做同一件事情，那么我们就不用加break了</code><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> num = <span class="number">9</span>;</span><br><span class="line"><span class="keyword">switch</span> (num) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">10</span>:</span><br><span class="line">    <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">        num--;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    defalut:</span><br><span class="line">        num =<span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#对象数据类型的常规操作"><span class="toc-text">对象数据类型的常规操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Boolean类型"><span class="toc-text">Boolean类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#规律：-在Boolean类型中，只有以下五种的Boolean值为false：0-NaN-空字符串-null-undefined，其余都为true"><span class="toc-text">规律： 在Boolean类型中，只有以下五种的Boolean值为false：0/NaN/空字符串/null/undefined，其余都为true </span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#null-amp-amp-undefined-都代表空"><span class="toc-text">null &amp;&amp; undefined 都代表空</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#object数据对象类"><span class="toc-text">object数据对象类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#对象的操作，对键值对的增删改查；"><span class="toc-text">对象的操作，对键值对的增删改查；</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#undefined"><span class="toc-text">【获取】</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#undefined"><span class="toc-text">【增/改】</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#undefined"><span class="toc-text">【删除】</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#浅析JS的运行机制"><span class="toc-text">浅析JS的运行机制</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#基本数据类型是按照值在操作的，把原有的值复制一份放到新的空间，和原来的值没关系了，你是你的，我是我的；"><span class="toc-text">基本数据类型是按照值在操作的，把原有的值复制一份放到新的空间，和原来的值没关系了，你是你的，我是我的；</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#引用数据类型不是按值在操作的，他操作的是空间引用地址，把原来空间的地址赋值给新的变量，但是原来的空间没有被克隆，这样就会出现多个变量关联的是相同的空间，相互之间就会有影响了；"><span class="toc-text">引用数据类型不是按值在操作的，他操作的是空间引用地址，把原来空间的地址赋值给新的变量，但是原来的空间没有被克隆，这样就会出现多个变量关联的是相同的空间，相互之间就会有影响了；</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JS中的判断语句"><span class="toc-text">JS中的判断语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#typeof（运算符）"><span class="toc-text">typeof（运算符）</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/Number/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/前端/"><i class="fa fa-tags"></i>前端</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/ES6/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/js/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

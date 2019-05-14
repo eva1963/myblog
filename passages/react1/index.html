@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>JSX语法 | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="react,react,node,js,JSX,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2018-02-24
+    </span>
+    
+      <span>
+        | <a href="/myblog/categories/react/"><i class="fa fa-bookmark"></i>react</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    JSX语法
+  </h1>
+  
+  <article class="passage-article">
+    <p>【渐进式框架】</p>
+<p>一种最流行的框架设计思想，一般框架中包含很多内容，这样导致框架的体积过于臃肿，会拖慢加载的速度，真实项目中，我们使用一个框架不一定用到所有的功能，此时我们应该把框架的功能拆分，用户想用什么，让其自己自由组合即可；</p>
+<p>全家桶:渐进式框架N多部分组合</p>
+<p>VUE全家桶：vue-cli/vue/vue-touter/vuex/axios/vue element(vant)</p>
+<p>REACT全家桶：react/react-dom/react-router/redux/react-redux/axios/ant/dva/saga/mobx…</p>
+<ol>
+<li><strong>react</strong>：react框架的可信部分，提供了Component类可以供我们进行组件开发，提供钩子函数（生命周期函数：<strong>所有的生命周期函数都是基于回调函数完成的</strong>)</li>
+<li><strong>react-dom</strong>：把JSX语法（react独有的语法）渲染为真实DOM（能够放到页面中展示的结构都叫做真实DOM）的组件；react中特点：我们所有的结构和js都在js文件中编写的</li>
+</ol>
+<ol start="3">
+<li><strong>ReactDOM.render([JXS],[content],[callback])</strong>：把JXS元素渲染到页面中</li>
+</ol>
+<ul>
+<li>JXS：react虚拟DOM元素</li>
+<li>content： 容器，我们想把元素放到页面中的哪个容器中</li>
+<li>callBack: 当把内容放到页面中呈现触发的回调函数</li>
+</ul>
+<h3 id="JXS-javascript-XML-HTML-react独有的语法"><a href="#JXS-javascript-XML-HTML-react独有的语法" class="headerlink" title="JXS(javascript XML(HTML)): react独有的语法"></a><strong>JXS</strong>(javascript XML(HTML)): react独有的语法</h3><blockquote>
+<p>和我们之前自己拼接的HTML类似，都是吧HTML结构代码和JS代码或者数据混合在一起，<strong>但是它不是字符串</strong></p>
+</blockquote>
+<ol>
+<li>不建议我们把JXS直接渲染到body当中，一般我们都放在index.html的#root中</li>
+<li>在JSX中出现的<code>{}</code>是存放JS的，但是要求JS代码执行完成需要有返回结果<ul>
+<li>里面不能是<code>对象/函数</code>，可以是自执行函数，数组可以但是数组里面不能放对象</li>
+<li>可以是一个基本类型的值（布尔类型的什么都不显示，null,undefined也是JSX元素，代表的是空）</li>
+<li>支持三元运算符</li>
+</ul>
+</li>
+<li>循环数组创建JSX元素（一般都基于数组的MAP方法完成迭代），需要给创建的元素设置唯一的KEY值（当前本次循环内唯一即可）</li>
+<li>只能出现一个根元素</li>
+<li>给元素设置样式类用的是className而不是class</li>
+<li>style中不能直接的写样式字符串，需要基于一个样式对象来遍历赋值</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = [&#123;</span><br><span class="line">        name: <span class="string">'eva'</span>,</span><br><span class="line">        age: <span class="number">12</span></span><br><span class="line">    &#125;],</span><br><span class="line">    root = <span class="built_in">document</span>.querySelector(<span class="string">'#root'</span>);</span><br><span class="line">ReactDOM.render( <span class="xml"><span class="tag">&lt; <span class="attr">div</span> <span class="attr">id</span> = <span class="string">'box'</span> <span class="attr">className</span>=<span class="string">'box1'</span> <span class="attr">style</span>=<span class="string">&#123;&#123;color:</span> #<span class="attr">fff</span>;<span class="attr">fontSize:</span> <span class="attr">12px</span>;&#125;&#125;&gt;</span></span></span><br><span class="line">    return &lt;ul&gt; &#123;</span><br><span class="line">        data.map((item, index) =&gt; &#123;</span><br><span class="line">            return &lt;li key = &#123; index &#125; &gt;</span><br><span class="line">                &lt;span &gt; &#123; item.name &#125; &lt; /span&gt; </span><br><span class="line">                &lt;span &gt; &#123; item.age &#125; &lt; /span&gt; </span><br><span class="line">                &lt;/li &gt; ;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125; </span><br><span class="line">    &lt;/ul&gt; </span><br><span class="line">    &lt; / div &gt; , root, () =&gt; &#123;</span><br><span class="line">        let box = document.querySelector('#box');</span><br><span class="line">        console.log(box.innerHTML);</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#JXS-javascript-XML-HTML-react独有的语法"><span class="toc-text">JXS(javascript XML(HTML)): react独有的语法</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/react1/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/react-node-js-JSX/"><i class="fa fa-tags"></i>react,node,js,JSX</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div>
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/react4/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/storage/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>
