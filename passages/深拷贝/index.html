@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>深拷贝 &amp; 浅拷贝 | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="JavaScript,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-03-28
+    </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    深拷贝 & 浅拷贝
+  </h1>
+  
+  <article class="passage-article">
+    <p>最近的分享终于临到我了TT，前两次分享了Promise和装饰器相关的东西，因为做项目期间又遇到关于深拷贝浅拷贝的问题，以前总是遇到一次查一次，这次决定认真的写下来跟大家分享一次，所以有了这次的文章~嘿嘿</p>
+<h3 id="1-赋值"><a href="#1-赋值" class="headerlink" title="1. 赋值"></a>1. 赋值</h3><ul>
+<li>基本数据类型：赋值</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ex1:</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="string">"andy"</span>;</span><br><span class="line"><span class="keyword">let</span> b = a;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>,b); <span class="comment">//"andy"</span></span><br><span class="line"></span><br><span class="line">a = <span class="string">"bob"</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span>, a); <span class="comment">// "bob"</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>, b); <span class="comment">// "andy"</span></span><br></pre></td></tr></table></figure>
+<p>对基本类型进行赋值操作，两个变量互不影响。</p>
+<ul>
+<li>引用数据类型：赋址<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  name: <span class="string">"andy"</span>,</span><br><span class="line">  book: &#123;</span><br><span class="line">​    title: <span class="string">"has a book"</span>,</span><br><span class="line">​    price: <span class="number">99</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> b = a;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">4</span>, b); <span class="comment">//&#123; name: 'andy', book: &#123; text: 'has a book', price: 99 &#125; &#125;</span></span><br><span class="line"></span><br><span class="line">a.name = <span class="string">"bob"</span>;</span><br><span class="line">a.book.price = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">5</span>, a); <span class="comment">//&#123; name: 'bob', book: &#123; text: 'has a book', price: 10 &#125; &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">6</span>, b); <span class="comment">//&#123; name: 'bob', book: &#123; text: 'has a book', price: 10 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>对引用类型进行赋<strong>址</strong>操作，两个变量指向同一个对象，改变变量 a 之后会影响变量 b，哪怕改变的只是对象 a 中的基本类型数据。</p>
+<h3 id="2-浅拷贝"><a href="#2-浅拷贝" class="headerlink" title="2. 浅拷贝"></a>2. 浅拷贝</h3><blockquote>
+<p>创建一个新对象，这个对象有着原始对象属性值的一份精确拷贝。如果属性是基本类型，拷贝的就是基本类型的值，如果属性是引用类型，拷贝的就是内存地址 ，所以如果其中一个对象改变了这个地址，就会影响到另一个对象。</p>
+<p>总结：浅拷贝就是拷贝第一层的<strong>基本类型值</strong>，以及第一层的<strong>引用类型地址</strong>。</p>
+</blockquote>
+<h4 id="Object-assign"><a href="#Object-assign" class="headerlink" title="Object.assign()"></a>Object.assign()</h4><blockquote>
+<p>将所有可枚举属性的值从一个或多个源对象复制到目标对象。它将返回目标对象。</p>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  name: <span class="string">"andy"</span>,</span><br><span class="line">  book: &#123;</span><br><span class="line">​    title: <span class="string">"has a book"</span>,</span><br><span class="line">​    price: <span class="number">99</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="built_in">Object</span>.assign(&#123;&#125;, a);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>,b); <span class="comment">//&#123; name: 'andy', book: &#123; text: 'has a book', price: 99&#125; &#125;</span></span><br><span class="line"></span><br><span class="line">a.name = <span class="string">"bob"</span>;</span><br><span class="line">a.book.price = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span>, a); <span class="comment">//&#123; name: 'bob', book: &#123; text: 'has a book', price: 10 &#125; &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>, b); <span class="comment">//&#123; name: 'andy', book: &#123; title: 'has a book', price: 10 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+<p>改变对象 a 之后，对象 b 的基本属性保持不变。但是当改变对象 a 中的对象 <code>book</code> 时，对象 b 相应的位置也发生了变化。</p>
+<h4 id="ES6的Spread"><a href="#ES6的Spread" class="headerlink" title="ES6的Spread"></a>ES6的Spread</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  name: <span class="string">"andy"</span>,</span><br><span class="line">  book: &#123;</span><br><span class="line">​    title: <span class="string">"has a book"</span>,</span><br><span class="line">​    price: <span class="number">99</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> b = &#123;...a&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">4</span>,b);<span class="comment">//&#123; name: 'andy', book: &#123; title: 'has a book', price: 99 &#125; &#125;</span></span><br><span class="line"></span><br><span class="line">a.name = <span class="string">"bob"</span>;</span><br><span class="line">a.book.price = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">5</span>, a);<span class="comment">//&#123; name: 'bob', book: &#123; title: 'has a book', price: 10 &#125; &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">6</span>, b);<span class="comment">//&#123; name: 'andy', book: &#123; title: 'has a book', price: 10 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+<p>这样我们就可以看出来，其实效果等同于Object.assign()</p>
+<h4 id="Array-prototype-slice"><a href="#Array-prototype-slice" class="headerlink" title="Array.prototype.slice()"></a>Array.prototype.slice()</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = [<span class="number">0</span>, <span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>]];</span><br><span class="line"><span class="keyword">let</span> b = a.slice(<span class="number">1</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">7</span>, b); <span class="comment">//[ 1, [ 2, 3 ] ]</span></span><br><span class="line"></span><br><span class="line">a[<span class="number">1</span>] = <span class="number">4</span>;</span><br><span class="line">a[<span class="number">2</span>][<span class="number">0</span>] = <span class="number">5</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">8</span>, a); <span class="comment">// [ 0, 4, [ 5, 3 ] ]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">9</span>, b); <span class="comment">// [ 1, [ 5, 3 ] ]</span></span><br></pre></td></tr></table></figure>
+<p>改变 <code>a[1]</code> 之后 <code>b[0]</code> 的值并没有发生变化，但改变 <code>a[2][0]</code> 之后，相应的 <code>b[1][0]</code> 的值也发生变化</p>
+<h4 id="实现一个浅拷贝"><a href="#实现一个浅拷贝" class="headerlink" title="实现一个浅拷贝"></a>实现一个浅拷贝</h4><p>看了上面的例子之后，我们知道了上面几个函数都只能对一个引用数据进行浅拷贝，那么浅拷贝到底是怎么回事，让我们手写一个浅拷贝来更深刻的理解它吧~<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">Object</span>.customizeAssign !== <span class="string">"function"</span>) &#123;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(<span class="built_in">Object</span>, <span class="string">"customizeAssign"</span>, &#123;</span><br><span class="line">​    value: <span class="function"><span class="keyword">function</span> (<span class="params">target</span>) </span>&#123;</span><br><span class="line">​      <span class="keyword">if</span> (target === <span class="literal">undefined</span> || target === <span class="literal">null</span>) &#123;</span><br><span class="line">​        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">"Cannot convert undefined or null to object"</span>);</span><br><span class="line">​      &#125;</span><br><span class="line">​      <span class="keyword">let</span> resp = <span class="built_in">Object</span>(target);</span><br><span class="line">​      <span class="built_in">console</span>.log(<span class="string">"arguments"</span>, <span class="built_in">arguments</span>);</span><br><span class="line"></span><br><span class="line">​      <span class="keyword">for</span> (<span class="keyword">let</span> index = <span class="number">1</span>; index &lt; <span class="built_in">arguments</span>.length; index++)&#123;</span><br><span class="line">​        <span class="keyword">let</span> nextSource = <span class="built_in">arguments</span>[index];</span><br><span class="line">​        <span class="keyword">if</span> (nextSource !== <span class="literal">null</span>) &#123;</span><br><span class="line">​          <span class="keyword">for</span> (<span class="keyword">let</span> nextKey <span class="keyword">in</span> nextSource) &#123;</span><br><span class="line">​            <span class="keyword">if</span> (<span class="built_in">Object</span>.prototype.hasOwnProperty.call(nextSource, nextKey)) &#123;</span><br><span class="line">​              resp[nextKey] = nextSource[nextKey];</span><br><span class="line">​            &#125;</span><br><span class="line">​          &#125;</span><br><span class="line">​        &#125;</span><br><span class="line">​      &#125;</span><br><span class="line">​      <span class="keyword">return</span> resp;</span><br><span class="line">​    &#125;,</span><br><span class="line">​    writable: <span class="literal">true</span>,</span><br><span class="line">​    <span class="comment">// enumerable: false,</span></span><br><span class="line">​    configurable: <span class="literal">true</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  name: <span class="string">"andy"</span>,</span><br><span class="line">  book: &#123;</span><br><span class="line">​    title: <span class="string">"has a book"</span>,</span><br><span class="line">​    price: <span class="number">99</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="built_in">Object</span>.customizeAssign(&#123;&#125;, a);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>,b);</span><br><span class="line"></span><br><span class="line">a.name = <span class="string">"bob"</span>;</span><br><span class="line">a.book.price = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span>, a);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>, b);</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-深拷贝"><a href="#3-深拷贝" class="headerlink" title="3. 深拷贝"></a>3. 深拷贝</h3><blockquote>
+<p>深拷贝会拷贝所有的属性，并拷贝属性指向的动态分配的内存。当对象和它所引用的对象一起拷贝时即发生深拷贝。深拷贝相比于浅拷贝速度较慢并且花销较大。拷贝前后两个对象互不影响。</p>
+</blockquote>
+<h4 id="JSON-parse-JSON-stringfy-object"><a href="#JSON-parse-JSON-stringfy-object" class="headerlink" title="JSON.parse(JSON.stringfy(object))"></a>JSON.parse(JSON.stringfy(object))</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  name: <span class="string">"andy"</span>,</span><br><span class="line">  book: &#123;</span><br><span class="line">​    title: <span class="string">"has a book"</span>,</span><br><span class="line">​    price: <span class="number">99</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> b = <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(a));</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>,b);</span><br><span class="line"></span><br><span class="line">a.name = <span class="string">"bob"</span>;</span><br><span class="line">a.book.price = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span>, a);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>, b);</span><br></pre></td></tr></table></figure>
+<p>完全改变变量 a 之后对 b 没有任何影响</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = [<span class="number">0</span>, <span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>]];</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(a.slice(<span class="number">1</span>)))</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>, b);</span><br><span class="line"></span><br><span class="line">a[<span class="number">1</span>] = <span class="number">4</span>;</span><br><span class="line">a[<span class="number">2</span>][<span class="number">0</span>] = <span class="number">5</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span>, a);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>, b);</span><br></pre></td></tr></table></figure>
+<p>对数组也是一样，改变原数组不会影响到拷贝之后的数组。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">  name: <span class="string">"andy"</span>,</span><br><span class="line">  a: <span class="literal">undefined</span>,</span><br><span class="line">  b: <span class="literal">null</span>,</span><br><span class="line">  c: Symbol(<span class="string">"andy"</span>),</span><br><span class="line">  d: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; </span><br><span class="line">​    <span class="keyword">const</span> num = <span class="number">1</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">  e: <span class="regexp">/'123'/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"obj"</span>, obj);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(obj));</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"b"</span>, b);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>忽略undefined；</li>
+<li>忽略Symbol；</li>
+<li>忽略函数；</li>
+<li>不能拷贝正则；</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">  a: <span class="number">1</span>,</span><br><span class="line">  b: &#123;</span><br><span class="line">​    c: <span class="number">2</span>,</span><br><span class="line">​    d: <span class="number">3</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">obj.a = obj.b;</span><br><span class="line">obj.b.c = obj.a;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"obj"</span>, obj);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(obj));</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"b"</span>, b);</span><br></pre></td></tr></table></figure>
+<p>循环引用的时候，会报错</p>
+<blockquote>
+<p>可以用哈希表解决。（接下来刷的算法题里面会有关于哈希表的详细介绍，这里不细讲）</p>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>,<span class="keyword">new</span> <span class="built_in">Date</span>());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span>,<span class="built_in">JSON</span>.stringify(<span class="keyword">new</span> <span class="built_in">Date</span>()));</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>, <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(<span class="keyword">new</span> <span class="built_in">Date</span>())));</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> date = (<span class="keyword">new</span> <span class="built_in">Date</span>()).valueOf();</span><br><span class="line"><span class="built_in">JSON</span>.stringify(date);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(date));</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"date"</span>, date);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"b"</span>, b);</span><br></pre></td></tr></table></figure>
+<h4 id="jQuery-extend-amp-amp-lodash-cloneDeep-实现"><a href="#jQuery-extend-amp-amp-lodash-cloneDeep-实现" class="headerlink" title="jQuery.extend() &amp;&amp; lodash.cloneDeep() 实现"></a>jQuery.extend() &amp;&amp; lodash.cloneDeep() 实现</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ShadowClone</span>(<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> target = &#123;&#125;;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> source) &#123;</span><br><span class="line">​    <span class="keyword">if</span> (<span class="built_in">Object</span>.prototype.hasOwnProperty.call(source, key)) &#123;</span><br><span class="line">​      target[key] = source[key];</span><br><span class="line">​    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> target;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  name: <span class="string">"andy"</span>,</span><br><span class="line">  book: &#123;</span><br><span class="line">​    title: <span class="string">"has a book"</span>,</span><br><span class="line">​    price: <span class="number">99</span></span><br><span class="line">  &#125;,</span><br><span class="line">  c: <span class="literal">null</span>,</span><br><span class="line">  d: <span class="literal">undefined</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> b = ShadowClone(a);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>, b);</span><br><span class="line"></span><br><span class="line">a.name = <span class="string">"bob"</span>;</span><br><span class="line">a.book.price = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span>, a);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>, b);</span><br></pre></td></tr></table></figure>
+<p>思路：浅拷贝 + 递归，浅拷贝时判断属性值是否是对象，如果是对象就进行递归操作，两个一结合就实现了深拷贝。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">deepClone</span>(<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> target = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> source) &#123;</span><br><span class="line">​    <span class="keyword">if</span> (<span class="built_in">Object</span>.prototype.hasOwnProperty.call(source, key)) &#123;</span><br><span class="line">​      <span class="keyword">if</span> (<span class="keyword">typeof</span> source[key] === <span class="string">"object"</span>) &#123;</span><br><span class="line">          <span class="comment">// 在这里判断如果有对象，则进行递归拷贝</span></span><br><span class="line">​        target[key] = deepClone(source[key]);</span><br><span class="line">​      &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">​        target[key] = source[key];</span><br><span class="line">​      &#125;</span><br><span class="line">​    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> target;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  name: <span class="string">"andy"</span>,</span><br><span class="line">  book: &#123;</span><br><span class="line">​    title: <span class="string">"has a book"</span>,</span><br><span class="line">​    price: <span class="number">99</span></span><br><span class="line">  &#125;,</span><br><span class="line">  c: <span class="literal">null</span>,</span><br><span class="line">  d: <span class="literal">undefined</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = deepClone(a);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>, b); <span class="comment">// &#123; name: 'andy',book: &#123; title: 'has a book', price: 99 &#125;,c: &#123;&#125;, d: undefined &#125;</span></span><br><span class="line"></span><br><span class="line">a.name = <span class="string">"bob"</span>;</span><br><span class="line">a.book.price = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span>, a); <span class="comment">//&#123; name: 'bob',book: &#123; title: 'has a book', price: 10 &#125;, c: null,d: undefined &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>, b); <span class="comment">//&#123; name: 'andy',book: &#123; title: 'has a book', price: 99 &#125;, c: &#123;&#125;,d: undefined &#125;</span></span><br></pre></td></tr></table></figure>
+<p>上述代码存在问题如下：</p>
+<ul>
+<li>没有对传入参数校验，传入 null 应返回 null ，但实际返回了 {}</li>
+<li><p>对象判断不严谨</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a=<span class="literal">null</span>;</span><br><span class="line"><span class="keyword">const</span> b=[];</span><br><span class="line"><span class="keyword">const</span> c=&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"a"</span>, <span class="keyword">typeof</span> a); <span class="comment">//a object</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"b"</span>, <span class="keyword">typeof</span> b); <span class="comment">//b object</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"c"</span>, <span class="keyword">typeof</span> c); <span class="comment">//c object</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不兼容数组</p>
+</li>
+</ul>
+<p>优化后的代码如下↓<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isObject</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> obj === <span class="string">"object"</span> &amp;&amp; obj !== <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">deepClone</span>(<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!isObject(source)) &#123;</span><br><span class="line">​    <span class="keyword">return</span> source; <span class="comment">//若不是对象，则返回本身；</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> target = <span class="built_in">Array</span>.isArray(source) ? [] : &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> source) &#123;</span><br><span class="line">​    <span class="keyword">if</span> (<span class="built_in">Object</span>.prototype.hasOwnProperty.call(source, key)) &#123;</span><br><span class="line">​      <span class="keyword">if</span> (<span class="keyword">typeof</span> source[key] === <span class="string">"object"</span>) &#123;</span><br><span class="line">​        target[key] = deepClone(source[key]);</span><br><span class="line">​      &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">​        target[key] = source[key];</span><br><span class="line">​      &#125;</span><br><span class="line">​    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> target;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  name: <span class="string">"andy"</span>,</span><br><span class="line">  book: &#123;</span><br><span class="line">​    title: <span class="string">"has a book"</span>,</span><br><span class="line">​    price: <span class="number">99</span></span><br><span class="line">  &#125;,</span><br><span class="line">  c: <span class="literal">null</span>,</span><br><span class="line">  d: <span class="literal">undefined</span>,</span><br><span class="line">  e: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> b = deepClone(a);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>, b); <span class="comment">//&#123; name: 'andy',  book: &#123; title: 'has a book', price: 99 &#125;,  c: null,  d: undefined &#125;</span></span><br><span class="line"></span><br><span class="line">a.name = <span class="string">"bob"</span>;</span><br><span class="line">a.book.price = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span>, a); <span class="comment">// &#123; name: 'bob',  book: &#123; title: 'has a book', price: 10 &#125;,  c: null,  d: undefined &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">3</span>, b); <span class="comment">//&#123; name: 'andy',  book: &#123; title: 'has a book', price: 99 &#125;,  c: null,  d: undefined &#125;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>|    | 和原数据指向同一对象 | 第一层数据为基本数据类型 |   原数据中包含子对象   |</p>
+<p>| :—-: | :——————: | :————————: | :————————: |</p>
+<p>| 赋值 |     是     | 改变 会 使原数据一同改变 | 改变 会 使原数据一同改变 |</p>
+<p>| 浅拷贝 |     否     | 改变 不会 使原数据一同改变 | 改变 会 使原数据一同改变 |</p>
+<p>| 深拷贝 |     否     | 改变 不会 使原数据一同改变 | 改变 不会 使原数据一同改变 |</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://segmentfault.com/a/1190000016672263" target="_blank" rel="noopener"> 如何解决递归爆栈的问题？</a></li>
+<li><a href="https://juejin.im/post/59ac1c4ef265da248e75892b" target="_blank" rel="noopener">深拷贝与浅拷贝的区别</a></li>
+</ul>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-赋值"><span class="toc-text">1. 赋值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-浅拷贝"><span class="toc-text">2. 浅拷贝</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Object-assign"><span class="toc-text">Object.assign()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ES6的Spread"><span class="toc-text">ES6的Spread</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Array-prototype-slice"><span class="toc-text">Array.prototype.slice()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#实现一个浅拷贝"><span class="toc-text">实现一个浅拷贝</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-深拷贝"><span class="toc-text">3. 深拷贝</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JSON-parse-JSON-stringfy-object"><span class="toc-text">JSON.parse(JSON.stringfy(object))</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#jQuery-extend-amp-amp-lodash-cloneDeep-实现"><span class="toc-text">jQuery.extend() &amp;&amp; lodash.cloneDeep() 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/深拷贝/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/JavaScript/"><i class="fa fa-tags"></i>JavaScript</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div> -->
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/mobx/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/reachook/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

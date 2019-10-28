@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>浅析React Hook | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="react,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-03-16
+    </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    浅析React Hook
+  </h1>
+  
+  <article class="passage-article">
+    <p>注： 此文篇幅略长，适合对hooks做基础了解的人阅读</p>
+<p>官方：Hook 是一些可以让你在函数组件里“钩入” React state 及生命周期等特性的函数。Hook 不能在 class 组件中使用 —— 这使得你不使用 class 也能使用 React。（我们不推荐把你已有的组件全部重写，但是你可以在新组件里开始使用 Hook。）</p>
+<h3 id="什么是hooks？"><a href="#什么是hooks？" class="headerlink" title="什么是hooks？"></a>什么是hooks？</h3><ul>
+<li><p>大家应该还记得之前react中的无状态组件，我们把之前的无状态组件引入可以使用React State的能力，那么这个组件就变成了函数组件，这种引入的工具我们叫他 “hooks”</p>
+</li>
+<li><p>请注意，要启用 Hook，所有 React 相关的 package 都必须升级到 16.8.0 或更高版本</p>
+</li>
+</ul>
+<h3 id="hooks的特点"><a href="#hooks的特点" class="headerlink" title="hooks的特点"></a>hooks的特点</h3><p>React Hooks 带来的好处不仅是 “<strong>更 FP（函数编程），更新粒度更细，代码更清晰</strong>”，还有如下三个特性：</p>
+<ul>
+<li><p>多个状态不会产生嵌套，写法还是平铺的（简化state）</p>
+</li>
+<li><p>Hooks 可以引用其他 Hooks（提供自定义方法Hook）</p>
+</li>
+<li><p>更容易将组件的 UI 与状态分离。（简化生命周期）</p>
+</li>
+</ul>
+<h3 id="Hook-使用规则"><a href="#Hook-使用规则" class="headerlink" title="Hook 使用规则"></a>Hook 使用规则</h3><p>Hook 就是 JavaScript 函数，但是使用它们会有两个额外的规则：</p>
+<ul>
+<li><p>只能在<strong>函数最外层</strong>调用 Hook。不要在循环、条件判断或者子函数中调用。</p>
+</li>
+<li><p>只能在 <strong>React 的函数组件</strong>中调用 Hook。不要在其他 JavaScript 函数中调用。</p>
+</li>
+</ul>
+<h3 id="React-Hooks-要解决的问题？"><a href="#React-Hooks-要解决的问题？" class="headerlink" title="React Hooks 要解决的问题？"></a>React Hooks 要解决的问题？</h3><ul>
+<li><strong>状态共享</strong></li>
+</ul>
+<blockquote>
+<p>这个状态指的是状态逻辑，所以称为<strong>状态逻辑复用</strong>会更恰当，因为只共享数据处理逻辑，不会共享数据本身。</p>
+</blockquote>
+<h3 id="问题：-this-setState的工作方式？"><a href="#问题：-this-setState的工作方式？" class="headerlink" title="问题： this.setState的工作方式？"></a>问题： this.setState的工作方式？</h3><ul>
+<li>参考佳琳之前讲的state合并更新的文章（<a href="https://gitlab.ezbuy.me/ezbuyfe/wiki/blob/master/%E6%97%A5%E5%B8%B8%E5%88%86%E4%BA%AB/2018/20181126%E5%88%86%E4%BA%AB%20-%20SetState%20or%20MobX.md" target="_blank" rel="noopener">链接</a>）（更详细请点击<a href="https://zhuanlan.zhihu.com/p/44537887" target="_blank" rel="noopener">链接</a>）</li>
+</ul>
+<h3 id="Hooks-API"><a href="#Hooks-API" class="headerlink" title="Hooks API:"></a>Hooks API:</h3><p><img src="https://cdn.nlark.com/yuque/0/2019/png/345883/1558004644364-1b750ef1-708d-489a-aa38-5bc34c2f87ca.png#align=left&amp;display=inline&amp;height=275&amp;name=image.png&amp;originHeight=449&amp;originWidth=268&amp;size=50362&amp;status=done&amp;width=164" alt="hookapi"></p>
+<h3 id="useState"><a href="#useState" class="headerlink" title="useState"></a>useState</h3><p><code>function useState&lt;S&gt;(initialState: S|(() =&gt; S)):[S, Dispatch&lt;SetStateAction&lt;S&gt;&gt;];</code></p>
+<blockquote>
+<p>Inside the Example component, we declare a new state variable by calling the useState Hook. It returns a pair of values, to which we give names. We’re calling our variable count because it holds the number of button clicks. We initialize it to zero by passing 0 as the only useState argument. The second returned item is itself a function. It lets us update the count so we’ll name it setCount.</p>
+</blockquote>
+<p>注意：你不必使用多个 state 变量。State 变量可以很好地存储对象和数组，因此，你仍然可以将相关数据分为一组。然而，不像 class 中的 this.setState，更新 state 变量总是替换它而不是合并它（案例<a href="https://github.com/eva1963/learn-React-Hooks/blob/master/src/components/usetState/useState.tsx" target="_blank" rel="noopener">链接</a>）</p>
+<h3 id="useEffect"><a href="#useEffect" class="headerlink" title="useEffect"></a>useEffect</h3><p><code>function useEffect(effect: EffectCallback, deps?: DependencyList): void;</code><br>作用：利用 useEffect 代替一些生命周期(解释两个参数)</p>
+<blockquote>
+<p>useEffect 就是一个 Effect Hook，给函数组件增加了操作副作用的能力。它跟 class 组件中的 componentDidMount、componentDidUpdate 和 componentWillUnmount 具有相同的用途，只不过被合并成了一个 API</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">useEffect(() *=&gt;* &#123;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">document</span>.title = <span class="string">`You clicked <span class="subst">$&#123;count&#125;</span> times`</span>;</span><br><span class="line"></span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>useEffect 做了什么？ 通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数（我们将它称之为 “effect”），并且在执行 DOM 更新之后调用它。在这个 effect 中，我们设置了 document 的 title 属性，不过我们也可以执行数据获取或调用其他命令式的 API。</p>
+</li>
+<li><p>为什么在组件内部调用 useEffect？ 将 useEffect 放在组件内部让我们可以在 effect 中直接访问 count state 变量（或其他 props）。我们不需要特殊的 API 来读取它 —— 它已经保存函数作用域中。Hook 使用了 JavaScript 的闭包机制，而不用在 JavaScript 已经提供了解决方案的情况下，还引入特定的 React API。</p>
+</li>
+<li><p>useEffect 会在每次渲染后都执行吗？ 是的，默认情况下，它在第一次渲染之后和每次更新之后都会执行。你可能会更容易接受 effect 发生在“渲染之后”这种概念，不用再去考虑“挂载”还是“更新”。React 保证了每次运行 effect 的时，DOM 都已经更新完毕</p>
+</li>
+</ol>
+<p>需要清理的Effect:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> useEffect(() *=&gt;* &#123;</span><br><span class="line"></span><br><span class="line">​    ChatAPI.subscribeToFriendStatus(friendID, handleStatusChange);</span><br><span class="line"></span><br><span class="line">​    <span class="keyword">return</span> () *=&gt;* &#123;</span><br><span class="line"></span><br><span class="line">​      ChatAPI.unsubscribeFromFriendStatus(friendID, handleStatusChange);</span><br><span class="line"></span><br><span class="line">​    &#125;;</span><br><span class="line"></span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>为什么要在 effect 中返回一个函数？</strong> 这是 effect 可选的清除机制。每个 effect 都可以返回一个清除函数。如此可以将添加和移除订阅的逻辑放在一起。它们都属于 effect 的一部分。</p>
+<p><strong>React 何时清除 effect？</strong> React 会在组件卸载的时候执行清除操作。正如之前学到的，effect 在每次渲染的时候都会对上一个effect 进行清除</p>
+<p><strong>那么使用Effect的优点有哪些呢？</strong></p>
+<ol>
+<li><p>使用多个Effect 实现关注点分离</p>
+</li>
+<li><p>通过跳过 Effect 进行性能优化（Effect的第二个参数）</p>
+</li>
+</ol>
+<ul>
+<li>之前的优化方式：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">componentDidUpdate(prevProps, prevState) &#123;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> (prevState.count !== <span class="keyword">this</span>.state.count) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">document</span>.title = <span class="string">`You clicked <span class="subst">$&#123;<span class="keyword">this</span>.state.count&#125;</span> times`</span>;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用Effect方式：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">useEffect(() *=&gt;* &#123;</span><br><span class="line"></span><br><span class="line"> <span class="built_in">document</span>.title = <span class="string">`You clicked <span class="subst">$&#123;count&#125;</span> times`</span>;</span><br><span class="line"></span><br><span class="line">&#125;, [count]); <span class="comment">// Only re-run the effect if count changes</span></span><br></pre></td></tr></table></figure>
+<h3 id="useRef"><a href="#useRef" class="headerlink" title="useRef"></a>useRef</h3><p> <code>interface MutableRefObject&lt;T&gt; {`</code>current:T;<code></code>}  function useRef<t>(initialValue: T): MutableRefObject<t>;`<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">*<span class="function"><span class="keyword">function</span>* <span class="title">TextInputWithFocusButton</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"> *<span class="keyword">const</span>* inputEl = useRef(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line"> *<span class="keyword">const</span>* onButtonClick = () *=&gt;* &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `current` 指向已挂载到 DOM 上的文本输入元素</span></span><br><span class="line"></span><br><span class="line">  inputEl.current.focus();</span><br><span class="line"></span><br><span class="line"> &#125;;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> (</span><br><span class="line">  &lt;&gt;</span><br><span class="line">   &lt;input ref=&#123;inputEl&#125; type=<span class="string">"text"</span> /&gt;</span><br><span class="line"></span><br><span class="line">   &lt;button onClick=&#123;onButtonClick&#125;&gt;Focus the input&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  &lt;/</span>&gt;</span><br><span class="line"> );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></t></t></p>
+<p>如果你将 ref 对象以 <div ref="{myRef}"> 形式传入组件，则无论该节点如何改变，React 都会将 ref 对象的 .current 属性设置为相应的 DOM 节点</div></p>
+<h3 id="useContext"><a href="#useContext" class="headerlink" title="useContext"></a>useContext</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*<span class="keyword">const</span>* value = useContext(MyContext);</span><br></pre></td></tr></table></figure>
+<p>接收一个 context 对象（React.createContext 的返回值）并返回该 context 的当前值。当前的 context 值由上层组件中距离当前组件最近的 &lt;MyContext.Provider&gt; 的 value prop 决定。<br>当组件上层最近的 &lt;MyContext.Provider&gt; 更新时，该 Hook 会触发重渲染，并使用最新传递给 MyContext provider 的 context value 值。</p>
+<p>这个涉及到react的context API，不了解的可自行查阅（<a href="https://zh-hans.reactjs.org/docs/context.html" target="_blank" rel="noopener">链接</a>）</p>
+<h3 id="自定义hooks："><a href="#自定义hooks：" class="headerlink" title="自定义hooks："></a>自定义hooks：</h3><p>如果你想自己写hooks的话也是可以的，比如上面的useFriendsStatus就相当于我们自己写的hooks函数，如果我们自定义hooks，那么必须遵守开头以“use”开始，这里我写了一个比较简单的自定义组件，参考<a href="https://github.com/eva1963/learn-React-Hooks/blob/master/src/components/youHooks/index.tsx" target="_blank" rel="noopener">链接</a></p>
+<h3 id="问题-react是怎么保证多个useState的相互独立的？"><a href="#问题-react是怎么保证多个useState的相互独立的？" class="headerlink" title="问题: react是怎么保证多个useState的相互独立的？"></a>问题: react是怎么保证多个useState的相互独立的？</h3><ul>
+<li>react是根据useState出现的顺序来定的</li>
+</ul>
+<h2 id="相关链接："><a href="#相关链接：" class="headerlink" title="相关链接："></a>相关链接：</h2><ul>
+<li><p>react官方介绍-Hooks<a href="https://zh-hans.reactjs.org/docs/hooks-intro.html" target="_blank" rel="noopener">链接</a></p>
+</li>
+<li><p>额外总结文<a href="https://segmentfault.com/a/1190000016950339#articleHeader11" target="_blank" rel="noopener">链接</a></p>
+</li>
+<li><p>示例代码<a href="https://github.com/eva1963/learn-React-Hooks" target="_blank" rel="noopener">链接</a></p>
+</li>
+<li><p>给hooks接入typescript请看<a href="https://zhuanlan.zhihu.com/p/66242790" target="_blank" rel="noopener">链接</a></p>
+</li>
+</ul>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是hooks？"><span class="toc-text">什么是hooks？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hooks的特点"><span class="toc-text">hooks的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hook-使用规则"><span class="toc-text">Hook 使用规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#React-Hooks-要解决的问题？"><span class="toc-text">React Hooks 要解决的问题？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题：-this-setState的工作方式？"><span class="toc-text">问题： this.setState的工作方式？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hooks-API"><span class="toc-text">Hooks API:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#useState"><span class="toc-text">useState</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#useEffect"><span class="toc-text">useEffect</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#useRef"><span class="toc-text">useRef</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#useContext"><span class="toc-text">useContext</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义hooks："><span class="toc-text">自定义hooks：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题-react是怎么保证多个useState的相互独立的？"><span class="toc-text">问题: react是怎么保证多个useState的相互独立的？</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#相关链接："><span class="toc-text">相关链接：</span></a>
+  </li></div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/reachook/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/react/"><i class="fa fa-tags"></i>react</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div> -->
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/深拷贝/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/webpack1/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

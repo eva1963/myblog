@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>typescript | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="react,typescript,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-06-20
+    </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    typescript
+  </h1>
+  
+  <article class="passage-article">
+    <h4 id="泛型概念"><a href="#泛型概念" class="headerlink" title="泛型概念"></a>泛型概念</h4><ol>
+<li>一个组件或函数可以支持多种类型的数据</li>
+</ol>
+<ul>
+<li>注意：这里使用泛型，我们明确的指定了T是string类型，并做为一个参数传给函数，使用了&lt;&gt;括起来而不是()</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不用泛型</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">arg: <span class="built_in">number</span></span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> arg;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用泛型（类型变量T）</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>&lt;<span class="title">T</span>&gt;(<span class="params">arg: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> arg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2.泛型用法</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//函数泛型不一定非得自动推导出类型，有时候显式指定类型就好</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getEl</span> &lt;<span class="title">T</span> <span class="title">extends</span> <span class="title">HTMLElement</span>&gt;(<span class="params">id: <span class="built_in">string</span></span>):<span class="title">T</span> </span>&#123;</span><br><span class="line"> <span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h4><h5 id="keyof-可以用来取得一个对象接口的所有-key-值"><a href="#keyof-可以用来取得一个对象接口的所有-key-值" class="headerlink" title="keyof 可以用来取得一个对象接口的所有 key 值"></a>keyof 可以用来取得一个对象接口的所有 key 值</h5><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Foo &#123;</span><br><span class="line"></span><br><span class="line"> name: <span class="built_in">string</span>;</span><br><span class="line"></span><br><span class="line"> age: <span class="built_in">number</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> T = keyof Foo <span class="comment">// -&gt; "name" | "age"</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557315589612-4181fe85-e4ee-4e7a-8062-ce9abea06ead.png#align=left&amp;display=inline&amp;height=593&amp;name=image.png&amp;originHeight=593&amp;originWidth=535&amp;size=94935&amp;status=done&amp;width=535" alt="typescript"></p>
+<p>！注意：最近(2019-8)在用keyof直接取值的时候总是报错，然后解决办法就是改变之前<span style="color: red">(key: keyof Something, value:any)</span>为<b style="color: red">（key:P in keyof T,value:T[P]）</b></p>
+
+
+<h5 id="in-可以遍历类型"><a href="#in-可以遍历类型" class="headerlink" title="in 可以遍历类型"></a>in 可以遍历类型</h5><blockquote>
+<p>keyof 产生联合类型, in 使用类型遍历, 所以他们经常一起使用</p>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Keys = <span class="string">"a"</span> | <span class="string">"b"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Obj = &#123;</span><br><span class="line"></span><br><span class="line">[p <span class="keyword">in</span> Keys]: <span class="built_in">string</span></span><br><span class="line"></span><br><span class="line">&#125; <span class="comment">// -&gt; &#123; a: string, b: string &#125;</span></span><br></pre></td></tr></table></figure>
+<h5 id="infer"><a href="#infer" class="headerlink" title="infer"></a>infer</h5><blockquote>
+<p>表示在条件语句中待推断的类型变量</p>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ParamType&lt;T&gt; = T <span class="keyword">extends</span> (param: infer P) =&gt; <span class="built_in">any</span> ? P : T;</span><br><span class="line"></span><br><span class="line"><span class="comment">// infer P 表示待推断的函数参数。</span></span><br><span class="line"><span class="comment">// P 表示待推断的返回值类型</span></span><br><span class="line"><span class="keyword">interface</span> User &#123;</span><br><span class="line"> name: <span class="built_in">string</span>;</span><br><span class="line"> age: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Func = <span class="function">(<span class="params">user: User</span>) =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Param = ParamType&lt;Func&gt;; <span class="comment">// Param = User</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> AA = ParamType&lt;<span class="built_in">string</span>&gt;; <span class="comment">// string</span></span><br></pre></td></tr></table></figure>
+<h5 id="typeof-获取类型"><a href="#typeof-获取类型" class="headerlink" title="typeof 获取类型"></a>typeof 获取类型</h5><p>一般我们都是先定义类型，再去赋值使用，但是使用 typeof 我们可以把使用顺序倒过来</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557307405417-d7cc1e87-9eb4-4ef3-9361-4566fb65e04f.png#align=left&amp;display=inline&amp;height=152&amp;name=image.png&amp;originHeight=152&amp;originWidth=666&amp;size=19662&amp;status=done&amp;width=666" alt="img2"></p>
+<h4 id="常见的泛型工具"><a href="#常见的泛型工具" class="headerlink" title="常见的泛型工具"></a>常见的泛型工具</h4><blockquote>
+<p>有兴趣的可自行查阅源码：node_modules/typescript/lib/lib.es5.d.ts</p>
+</blockquote>
+<ul>
+<li>Partial 作用是将传入的属性变为可选项</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Partial&lt;T&gt; = &#123; [P <span class="keyword">in</span> keyof T]?: T[P] &#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557301778377-5544d1dc-03a5-41c2-bd1d-b45575a62268.png#align=left&amp;display=inline&amp;height=228&amp;name=image.png&amp;originHeight=228&amp;originWidth=628&amp;size=38290&amp;status=done&amp;width=628" alt="image.png"></p>
+<ul>
+<li>Readonly把对象 key 全部设置为只读</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Readonly&lt;T&gt; = &#123;</span><br><span class="line">  readonly [P <span class="keyword">in</span> keyof T]: T[P];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557301825248-f0d0e2e1-2464-451c-91f9-af41b5922d3d.png#align=left&amp;display=inline&amp;height=155&amp;name=image.png&amp;originHeight=155&amp;originWidth=560&amp;size=31613&amp;status=done&amp;width=560" alt="image.png"></p>
+<ul>
+<li>Record&lt;K, U&gt; 将对象某些属性转换成另一个类型</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Record&lt;K <span class="keyword">extends</span> keyof <span class="built_in">any</span>, T&gt; = &#123; [P <span class="keyword">in</span> K]: T &#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557302561361-70ac7b9d-4f94-415e-886e-fbdd53fae534.png#align=left&amp;display=inline&amp;height=293&amp;name=image.png&amp;originHeight=293&amp;originWidth=503&amp;size=36283&amp;status=done&amp;width=503" alt="image.png"></p>
+<ul>
+<li>Pick &lt;T, U&gt;从 T 中取出 一系列 U 的属性</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Pick&lt;T, U <span class="keyword">extends</span> keyof T&gt; = &#123; [P <span class="keyword">in</span> U]: T[P] &#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Extract&lt;T, U&gt; 从 T 中的取出 U 类型</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Extract&lt;T, U&gt; = T <span class="keyword">extends</span> U ? T : never;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557302513081-1ac460a5-26fe-466e-8232-50e63202ebbd.png#align=left&amp;display=inline&amp;height=99&amp;name=image.png&amp;originHeight=99&amp;originWidth=734&amp;size=13267&amp;status=done&amp;width=734" alt="image.png"></p>
+<ul>
+<li>Exclude&lt;T, U&gt; 将 T 中的 U 类型排除，和 Extract 功能相反。</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Exclude&lt;T, U&gt; = T <span class="keyword">extends</span> U ? never : T;</span><br><span class="line"><span class="comment">// eg</span></span><br><span class="line"><span class="keyword">type</span> T = Exclude&lt;<span class="number">1</span> | <span class="number">2</span>, <span class="number">1</span> | <span class="number">3</span>&gt; <span class="comment">// -&gt; 2</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557302472772-82414127-03c0-472d-882c-df6d2be17471.png#align=left&amp;display=inline&amp;height=93&amp;name=image.png&amp;originHeight=93&amp;originWidth=739&amp;size=13679&amp;status=done&amp;width=739" alt="image.png"></p>
+<ul>
+<li>Omit&lt;T,K&gt; 从对象 T 中排除 key 是 K 的属性</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Omit = Pick&lt;T, Exclude&lt;keyof T, K&gt;&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>ReturnType 获取函数类型T的返回值类型。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ReturnType&lt;T <span class="keyword">extends</span> (...args: <span class="built_in">any</span>) =&gt; <span class="built_in">any</span>&gt; = T <span class="keyword">extends</span> (...args: <span class="built_in">any</span>) =&gt; infer R ? R : <span class="built_in">any</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ConstructorParameters 获取构造函数中参数（实例）类型</p>
+</li>
+<li><p>InstanceType 获取一个构造函数类型的实例类型</p>
+</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ConstructorParameters&lt;T <span class="keyword">extends</span> <span class="keyword">new</span> (...args: <span class="built_in">any</span>[]) =&gt; <span class="built_in">any</span>&gt; = T <span class="keyword">extends</span> <span class="keyword">new</span> (...args: infer P) =&gt; <span class="built_in">any</span>? P: never;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> InstanceType&lt;T <span class="keyword">extends</span> <span class="keyword">new</span> (...args: <span class="built_in">any</span>) =&gt; <span class="built_in">any</span>&gt; = T <span class="keyword">extends</span> <span class="keyword">new</span> (...args: <span class="built_in">any</span>) =&gt; infer R ? R : <span class="built_in">any</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557303476087-1f66d05f-1125-492a-b936-78d93740f90b.png#align=left&amp;display=inline&amp;height=95&amp;originHeight=95&amp;originWidth=562&amp;status=done&amp;width=562" alt="img3"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557303592453-3db0ee51-6182-47b6-b08e-c88f6295eea2.png#align=left&amp;display=inline&amp;height=243&amp;name=image.png&amp;originHeight=243&amp;originWidth=760&amp;size=45597&amp;status=done&amp;width=760" alt="image.png"></p>
+<ul>
+<li>Promise<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Promise&lt;T&gt; &#123;</span><br><span class="line">  then&lt;TResult1 = T, TResult2 = never&gt;<span class="function">(<span class="params">onfulfilled?: (<span class="params">(<span class="params">value: T</span>) =&gt; TResult1 | PromiseLike&lt;TResult1&gt;</span>) | <span class="literal">undefined</span> | <span class="literal">null</span>, onrejected?: (<span class="params">(<span class="params">reason: <span class="built_in">any</span></span>) =&gt; TResult2 | PromiseLike&lt;TResult2&gt;</span>) | <span class="literal">undefined</span> | <span class="literal">null</span></span>): <span class="params">Promise</span>&lt;<span class="params">TResult1</span> | <span class="params">TResult2</span>&gt;;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">  <span class="params">catch</span>&lt;<span class="params">TResult</span> = <span class="params">never</span>&gt;(<span class="params">onrejected?: (<span class="params">(<span class="params">reason: <span class="built_in">any</span></span>) =&gt; TResult | PromiseLike&lt;TResult&gt;</span>) | <span class="literal">undefined</span> | <span class="literal">null</span></span>): <span class="params">Promise</span>&lt;<span class="params">T</span> | <span class="params">TResult</span>&gt;;</span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557303858499-3bf8b94e-91c7-4360-85e5-f931383f86e2.png#align=left&amp;display=inline&amp;height=520&amp;name=image.png&amp;originHeight=520&amp;originWidth=696&amp;size=99747&amp;status=done&amp;width=696" alt="image.png"></p>
+<h3 id="自动推断"><a href="#自动推断" class="headerlink" title="自动推断"></a>自动推断</h3><p>在一些情况下，编译器能把一些特定的属性推断为 readonly，例如在一个 class 中，如果你有一个只含有 getter 但是没有 setter 的属性，他能被推断为只读：<br><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557304024939-7cd7b810-5344-4438-8b0f-b18055fa9c03.png#align=left&amp;display=inline&amp;height=343&amp;name=image.png&amp;originHeight=343&amp;originWidth=629&amp;size=49206&amp;status=done&amp;width=629" alt="image.png"></p>
+<h4 id="react中的Typescript"><a href="#react中的Typescript" class="headerlink" title="react中的Typescript"></a>react中的Typescript</h4><ul>
+<li>有状态组件</li>
+</ul>
+<p>Component的props和state声明的时候都是Readonly,所以不能直接更改；<br>React的 state 更新需要使用 setState 方法，为防止直接对 state 的属性更新,可以对state设置只读；</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557316025019-1fde3efc-a0e6-4cc8-8a67-1e2cdcb06c01.png#align=left&amp;display=inline&amp;height=630&amp;name=image.png&amp;originHeight=854&amp;originWidth=808&amp;size=149515&amp;status=done&amp;width=596" alt="image.png"></p>
+<h4 id="无状态组件-SFC"><a href="#无状态组件-SFC" class="headerlink" title="无状态组件(SFC)"></a>无状态组件(SFC)</h4><p>可以使用 SFC（FC） 进行无状态组件开发。</p>
+<blockquote>
+<p>v16.7起，由于hooks的加入，函数式组件也可以使用state，所以这个命名不准确。新的react声明文件里，也定义了React.FC类型</p>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> SFC&lt;P = &#123;&#125;&gt; = StatelessComponent&lt;P&gt;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> StatelessComponent&lt;P = &#123;&#125;&gt; &#123;</span><br><span class="line">  (props: P &amp; &#123; children?: ReactNode &#125;, context?: <span class="built_in">any</span>): ReactElement&lt;<span class="built_in">any</span>&gt; | <span class="literal">null</span>;</span><br><span class="line">  propTypes?: ValidationMap&lt;P&gt;;</span><br><span class="line">  contextTypes?: ValidationMap&lt;<span class="built_in">any</span>&gt;;</span><br><span class="line">  defaultProps?: Partial&lt;P&gt;;</span><br><span class="line">  displayName?: <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><div style="color: #6d6d6d;font-size: 14px">案例：在 React 的声明文件中 已经定义了一个 SFC 类型，使用这个类型可以避免我们重复定义 children、 propTypes、 contextTypes、 defaultProps、displayName 的类型</div><br><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557314899448-776932ce-b79d-44ea-805b-c0fc8e45c240.png#align=left&amp;display=inline&amp;height=330&amp;name=image.png&amp;originHeight=627&amp;originWidth=1201&amp;size=117897&amp;status=done&amp;width=632" alt="image.png"></p>
+<ol start="5">
+<li>利用ts的查找类型来复用类型定义<br></li>
+</ol>
+<ul>
+<li>父组件用props往下传function的时候可以直接引用类的方法 来声明方法类型,State也一样</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557314960538-722a7f6b-30d6-4231-9535-579188f9b02c.png#align=left&amp;display=inline&amp;height=520&amp;name=image.png&amp;originHeight=866&amp;originWidth=846&amp;size=185972&amp;status=done&amp;width=508" alt="image.png"></p>
+<p>优点：不用重复写方法签名，能从方法调用跳到方法定义,不管有多少层</p>
+<h5 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h5><ul>
+<li><a href="https://jkchao.github.io/typescript-book-chinese/" target="_blank" rel="noopener">深入理解Typescript</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/44996995" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/44996995</a></li>
+</ul>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#泛型概念"><span class="toc-text">泛型概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#关键字"><span class="toc-text">关键字</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#keyof-可以用来取得一个对象接口的所有-key-值"><span class="toc-text">keyof 可以用来取得一个对象接口的所有 key 值</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#in-可以遍历类型"><span class="toc-text">in 可以遍历类型</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#infer"><span class="toc-text">infer</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#typeof-获取类型"><span class="toc-text">typeof 获取类型</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#常见的泛型工具"><span class="toc-text">常见的泛型工具</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#自动推断"><span class="toc-text">自动推断</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#react中的Typescript"><span class="toc-text">react中的Typescript</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#无状态组件-SFC"><span class="toc-text">无状态组件(SFC)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol></li></ol>
+  </li></div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/typescript/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/react-typescript/"><i class="fa fa-tags"></i>react,typescript</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div> -->
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="javascript:void(0);" data-enable="false">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/mobx/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

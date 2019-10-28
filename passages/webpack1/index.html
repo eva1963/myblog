@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>webpack之入口源码解析 | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="webpack,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-02-10
+    </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    webpack之入口源码解析
+  </h1>
+  
+    <div class="passage-cover">
+      <figure style="background-image:url(https://www.petmd.com/sites/default/files/Acute-Dog-Diarrhea-47066074.jpg);"></figure>
+    </div>
+  
+  <article class="passage-article">
+    <p>不知道大家有没有跟我一样的疑问，就是我们通常构建项目都是直接使用webpack来做项目构建，<strong>那么我们在执行webpack这个命令的时候，到底发生了什么呢</strong>？</p>
+<p>我在刚开始的使用过程中经常会有这种疑问，那么今天终于有空来好好研究一下它啦，让我们开始吧~</p>
+<p><code>我们在一个项目里面使用webpack的时候，一般是局部安装，安装下来的webpack文件夹的package.json里面一般都会有一个js脚本bin</code> <em>“bin”</em>: “./bin/webpack.js”,<code>这个就是将webpack的入口暴露在node_modules的bin文件中，那么我们在这个项目中执行webpack的时候就会自动找到这个webpack对应的入口文件</code>；</p>
+<h4 id="那么我们根据这个入口文件webpack-js来分析一下，它主要做了什么事情："><a href="#那么我们根据这个入口文件webpack-js来分析一下，它主要做了什么事情：" class="headerlink" title="那么我们根据这个入口文件webpack.js来分析一下，它主要做了什么事情："></a>那么我们根据这个入口文件webpack.js来分析一下，它主要做了什么事情：</h4><p>打开webpack.js ,第一行<code>process.exitCode = 0</code>代表我们这个webpack是正常执行返回；webpack执行期间如果报错就会修改这个code,然后输出error报错信息；</p>
+<h3 id="运行某个命令："><a href="#运行某个命令：" class="headerlink" title="运行某个命令："></a>运行某个命令：</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> runCommand = <span class="function">(<span class="params">command, args</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">const</span> cp = <span class="built_in">require</span>(<span class="string">"child_process"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">const</span> executedCommand = cp.spawn(command, args, &#123;</span><br><span class="line">			stdio: <span class="string">"inherit"</span>,</span><br><span class="line">			shell: <span class="literal">true</span></span><br><span class="line">		&#125;);</span><br><span class="line"></span><br><span class="line">		executedCommand.on(<span class="string">"error"</span>, error =&gt; &#123;</span><br><span class="line">			reject(error);</span><br><span class="line">		&#125;);</span><br><span class="line"></span><br><span class="line">		executedCommand.on(<span class="string">"exit"</span>, code =&gt; &#123;</span><br><span class="line">			<span class="keyword">if</span> (code === <span class="number">0</span>) &#123;</span><br><span class="line">				resolve();</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				reject();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="判断某个包是否安装："><a href="#判断某个包是否安装：" class="headerlink" title="判断某个包是否安装："></a>判断某个包是否安装：</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> isInstalled = <span class="function"><span class="params">packageName</span> =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="built_in">require</span>.resolve(packageName);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="webpack可用的CLI："><a href="#webpack可用的CLI：" class="headerlink" title="webpack可用的CLI："></a>webpack可用的CLI：</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> CLIs = [</span><br><span class="line">	&#123;</span><br><span class="line">		name: <span class="string">"webpack-cli"</span>,</span><br><span class="line">		package: <span class="string">"webpack-cli"</span>,</span><br><span class="line">		binName: <span class="string">"webpack-cli"</span>,</span><br><span class="line">		alias: <span class="string">"cli"</span>,</span><br><span class="line">		installed: isInstalled(<span class="string">"webpack-cli"</span>),</span><br><span class="line">		recommended: <span class="literal">true</span>,</span><br><span class="line">		url: <span class="string">"https://github.com/webpack/webpack-cli"</span>,</span><br><span class="line">		description: <span class="string">"The original webpack full-featured CLI."</span></span><br><span class="line">	&#125;,</span><br><span class="line">	&#123;</span><br><span class="line">		name: <span class="string">"webpack-command"</span>,</span><br><span class="line">		package: <span class="string">"webpack-command"</span>,</span><br><span class="line">		binName: <span class="string">"webpack-command"</span>,</span><br><span class="line">		alias: <span class="string">"command"</span>,</span><br><span class="line">		installed: isInstalled(<span class="string">"webpack-command"</span>),</span><br><span class="line">		recommended: <span class="literal">false</span>,</span><br><span class="line">		url: <span class="string">"https://github.com/webpack-contrib/webpack-command"</span>,</span><br><span class="line">		description: <span class="string">"A lightweight, opinionated webpack CLI."</span></span><br><span class="line">	&#125;</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+<h3 id="判断两个CLI是否安装："><a href="#判断两个CLI是否安装：" class="headerlink" title="判断两个CLI是否安装："></a>判断两个CLI是否安装：</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> installedClis = CLIs.filter(<span class="function"><span class="params">cli</span> =&gt;</span> cli.installed);</span><br></pre></td></tr></table></figure>
+<h3 id="根据安装数量进行处理："><a href="#根据安装数量进行处理：" class="headerlink" title="根据安装数量进行处理："></a>根据安装数量进行处理：</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//如果你当前没有安装webpack-cli 那么将进入if判断；</span></span><br><span class="line"><span class="keyword">if</span> (installedClis.length === <span class="number">0</span>) &#123;</span><br><span class="line">	<span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">"path"</span>);</span><br><span class="line">	<span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>);</span><br><span class="line">	<span class="keyword">const</span> readLine = <span class="built_in">require</span>(<span class="string">"readline"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//首先它会提示你，必须要安装其中一个</span></span><br><span class="line">	<span class="keyword">let</span> notify =</span><br><span class="line">		<span class="string">"One CLI for webpack must be installed. These are recommended choices, delivered as separate packages:"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> CLIs) &#123;</span><br><span class="line">		<span class="keyword">if</span> (item.recommended) &#123;</span><br><span class="line">			notify += <span class="string">`\n - <span class="subst">$&#123;item.name&#125;</span> (<span class="subst">$&#123;item.url&#125;</span>)\n   <span class="subst">$&#123;item.description&#125;</span>`</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">console</span>.error(notify);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> isYarn = fs.existsSync(path.resolve(process.cwd(), <span class="string">"yarn.lock"</span>));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> packageManager = isYarn ? <span class="string">"yarn"</span> : <span class="string">"npm"</span>;</span><br><span class="line">	<span class="keyword">const</span> installOptions = [isYarn ? <span class="string">"add"</span> : <span class="string">"install"</span>, <span class="string">"-D"</span>];</span><br><span class="line"></span><br><span class="line">	<span class="built_in">console</span>.error(</span><br><span class="line">		<span class="string">`We will use "<span class="subst">$&#123;packageManager&#125;</span>" to install the CLI via "<span class="subst">$&#123;packageManager&#125;</span> <span class="subst">$&#123;installOptions.join(</span></span></span><br><span class="line"><span class="string"><span class="subst">			<span class="string">" "</span></span></span></span><br><span class="line"><span class="string"><span class="subst">		)&#125;</span>".`</span></span><br><span class="line">	);</span><br><span class="line"><span class="comment">//询问是否要帮你自动安装，yes选项则会执行安装步骤</span></span><br><span class="line">	<span class="keyword">const</span> question = <span class="string">`Do you want to install 'webpack-cli' (yes/no): `</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> questionInterface = readLine.createInterface(&#123;</span><br><span class="line">		input: process.stdin,</span><br><span class="line">		output: process.stderr</span><br><span class="line">	&#125;);</span><br><span class="line">	questionInterface.question(question, answer =&gt; &#123;</span><br><span class="line">		questionInterface.close();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//输入的答案是否以y开头，也就是yes，如果不是就直接结束程序</span></span><br><span class="line">		<span class="keyword">const</span> normalizedAnswer = answer.toLowerCase().startsWith(<span class="string">"y"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (!normalizedAnswer) &#123;</span><br><span class="line">			<span class="built_in">console</span>.error(</span><br><span class="line">				<span class="string">"You need to install 'webpack-cli' to use webpack via CLI.\n"</span> +</span><br><span class="line">					<span class="string">"You can also install the CLI manually."</span></span><br><span class="line">			);</span><br><span class="line">			process.exitCode = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//继续安装</span></span><br><span class="line">		<span class="keyword">const</span> packageName = <span class="string">"webpack-cli"</span>;</span><br><span class="line"></span><br><span class="line">		<span class="built_in">console</span>.log(</span><br><span class="line">			<span class="string">`Installing '<span class="subst">$&#123;packageName&#125;</span>' (running '<span class="subst">$&#123;packageManager&#125;</span> <span class="subst">$&#123;installOptions.join(</span></span></span><br><span class="line"><span class="string"><span class="subst">				<span class="string">" "</span></span></span></span><br><span class="line"><span class="string"><span class="subst">			)&#125;</span> <span class="subst">$&#123;packageName&#125;</span>')...`</span></span><br><span class="line">		);</span><br><span class="line"><span class="comment">//这个就是上面第一个出现的函数，在这里用来执行安装命令</span></span><br><span class="line">		runCommand(packageManager, installOptions.concat(packageName))</span><br><span class="line">			.then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">				<span class="built_in">require</span>(packageName); <span class="comment">//eslint-disable-line</span></span><br><span class="line">			&#125;)</span><br><span class="line">			.catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">				<span class="built_in">console</span>.error(error);</span><br><span class="line">				process.exitCode = <span class="number">1</span>;</span><br><span class="line">			&#125;);</span><br><span class="line">	&#125;);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (installedClis.length === <span class="number">1</span>) &#123;</span><br><span class="line">	<span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">"path"</span>);</span><br><span class="line">	<span class="keyword">const</span> pkgPath = <span class="built_in">require</span>.resolve(<span class="string">`<span class="subst">$&#123;installedClis[<span class="number">0</span>].package&#125;</span>/package.json`</span>);</span><br><span class="line">	<span class="comment">// eslint-disable-next-line node/no-missing-require</span></span><br><span class="line">	<span class="keyword">const</span> pkg = <span class="built_in">require</span>(pkgPath);</span><br><span class="line">	<span class="comment">// eslint-disable-next-line node/no-missing-require</span></span><br><span class="line">	<span class="built_in">require</span>(path.resolve(</span><br><span class="line">		path.dirname(pkgPath),</span><br><span class="line">		pkg.bin[installedClis[<span class="number">0</span>].binName]</span><br><span class="line">	));</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">//如果webpack工具安装重复，建议只留下webpack-cli</span></span><br><span class="line">	<span class="built_in">console</span>.warn(</span><br><span class="line">		<span class="string">`You have installed <span class="subst">$&#123;installedClis</span></span></span><br><span class="line"><span class="string"><span class="subst">			.map(item =&gt; item.name)</span></span></span><br><span class="line"><span class="string"><span class="subst">			.join(</span></span></span><br><span class="line"><span class="string"><span class="subst">				<span class="string">" and "</span></span></span></span><br><span class="line"><span class="string"><span class="subst">			)&#125;</span> together. To work with the "webpack" command you need only one CLI package, please remove one of them or use them directly via their binary.`</span></span><br><span class="line">	);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// @ts-ignore</span></span><br><span class="line">	process.exitCode = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#那么我们根据这个入口文件webpack-js来分析一下，它主要做了什么事情："><span class="toc-text">那么我们根据这个入口文件webpack.js来分析一下，它主要做了什么事情：</span></a></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#运行某个命令："><span class="toc-text">运行某个命令：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#判断某个包是否安装："><span class="toc-text">判断某个包是否安装：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webpack可用的CLI："><span class="toc-text">webpack可用的CLI：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#判断两个CLI是否安装："><span class="toc-text">判断两个CLI是否安装：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#根据安装数量进行处理："><span class="toc-text">根据安装数量进行处理：</span></a>
+  </li></div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/webpack1/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/webpack/"><i class="fa fa-tags"></i>webpack</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div> -->
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/reachook/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/genCascaderOptionType/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>
