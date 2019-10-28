@@ -6,12 +6,12 @@
   <meta name="author" content="eva">
   
   
-  <title>typescript | 萌小怪的秘密花园</title>
+  <title>ts | 萌小怪的秘密花园</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="react,typescript,">
+    <meta name="keywords" content="typescript,">
   
 
   
@@ -174,7 +174,7 @@
     
   </div>
   <h1 class="passage-title">
-    typescript
+    ts
   </h1>
   
   <article class="passage-article">
@@ -189,9 +189,7 @@
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//函数泛型不一定非得自动推导出类型，有时候显式指定类型就好</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getEl</span> &lt;<span class="title">T</span> <span class="title">extends</span> <span class="title">HTMLElement</span>&gt;(<span class="params">id: <span class="built_in">string</span></span>):<span class="title">T</span> </span>&#123;</span><br><span class="line"> <span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h4><h5 id="keyof-可以用来取得一个对象接口的所有-key-值"><a href="#keyof-可以用来取得一个对象接口的所有-key-值" class="headerlink" title="keyof 可以用来取得一个对象接口的所有 key 值"></a>keyof 可以用来取得一个对象接口的所有 key 值</h5><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Foo &#123;</span><br><span class="line"></span><br><span class="line"> name: <span class="built_in">string</span>;</span><br><span class="line"></span><br><span class="line"> age: <span class="built_in">number</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> T = keyof Foo <span class="comment">// -&gt; "name" | "age"</span></span><br></pre></td></tr></table></figure>
 <p><img src="https://cdn.nlark.com/yuque/0/2019/png/340523/1557315589612-4181fe85-e4ee-4e7a-8062-ce9abea06ead.png#align=left&amp;display=inline&amp;height=593&amp;name=image.png&amp;originHeight=593&amp;originWidth=535&amp;size=94935&amp;status=done&amp;width=535" alt="typescript"></p>
-<p>！注意：最近(2019-8)在用keyof直接取值的时候总是报错，然后解决办法就是改变之前<span style="color: red">(key: keyof Something, value:any)</span>为<b style="color: red">（key:P in keyof T,value:T[P]）</b></p>
-
-
+<p></p><p>！注意：最近(2019-8)在用keyof直接取值的时候总是报错，然后解决办法就是改变之前<span style="color: red">(key: keyof Something, value:any)</span>为<b style="color: red">（key:P in keyof T,value:T[P]）</b></p><p></p>
 <h5 id="in-可以遍历类型"><a href="#in-可以遍历类型" class="headerlink" title="in 可以遍历类型"></a>in 可以遍历类型</h5><blockquote>
 <p>keyof 产生联合类型, in 使用类型遍历, 所以他们经常一起使用</p>
 </blockquote>
@@ -296,7 +294,7 @@
       
         <div>
           原文链接: 
-          <a href target="_blank">http://eva1963.win/myblog/passages/typescript/</a>
+          <a href target="_blank">http://eva1963.win/myblog/passages/ts/</a>
         </div>
       
       <div>
@@ -307,7 +305,7 @@
   
     <div class="passage-tags">
      
-      <a href="/myblog/tags/react-typescript/"><i class="fa fa-tags"></i>react,typescript</a>
+      <a href="/myblog/tags/typescript/"><i class="fa fa-tags"></i>typescript</a>
     
     </div>
   
@@ -383,10 +381,10 @@
 
 <div class="bottom-bar">
   <div class="bottom-bar-left">
-    <a href="/myblog/passages/ts/" data-enable="true">
+    <a href="javascript:void(0);" data-enable="false">
       <i class="fa fa-arrow-left"></i>
     </a>
-    <a href="/myblog/passages/mobx/" data-enable="true">
+    <a href="/myblog/passages/typescript/" data-enable="true">
       <i class="fa fa-arrow-right"></i>
     </a>
   </div>
