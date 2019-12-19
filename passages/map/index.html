@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>Object与Map的异同及使用场景 | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Object,Map,Array,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-11-19
+    </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    Object与Map的异同及使用场景
+  </h1>
+  
+  <article class="passage-article">
+    <blockquote>
+<p> 首先，为什么是Object与Map的异同呢，而不是Set或者Array，如果你有这样的想法，那么恭喜你这篇文章可能很符合你的口味，之所以对比Object和Map是因为这两个实在是太像了，下面我们从参考文章中总结一下都有哪些异同吧</p>
+</blockquote>
+<h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><p>Map是一种数据结构（它很特别，是一种抽象的数据结构类型），数据一对对进行存储，其中包含键以及映射到该键的值。并且由于键的唯一性，因此不存在重复的键值对。<br>Map便是为了快速搜索和查找数据而生的。</p>
+<p><strong>注</strong>：Map中的键和值可以是任何数据类型，不仅限于字符串或整数。</p>
+<h3 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h3><p>这个我们就很熟悉了，这不就是万物皆对象的那个对象嘛，对的，所以很明显，Object是一种字典类型的数据结构，所以它当然能像Map一样存储数据了，所以很明显Object包含了Map</p>
+<h3 id="区别1："><a href="#区别1：" class="headerlink" title="区别1："></a>区别1：</h3><ul>
+<li>继承：Map是Object的实例对象，而Object显然不可能是Map的实例对象</li>
+<li>键：Object遵循普通的字典规则，键必须是单一类型，并且只能是整数、字符串或是Symbol类型。但在Map中，key可以为任意数据类型（Object, Array等）。（你可以尝试将一个对象设置为一个Object的key，看看最终的数据结构）</li>
+<li>元素顺序：Map会保留所有元素的顺序，而Object并不会保证属性的顺序</li>
+</ul>
+<p>实例参考：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]]); </span><br><span class="line"><span class="built_in">console</span>.log(map, map <span class="keyword">instanceof</span> <span class="built_in">Object</span>); <span class="comment">//map = &#123;1=&gt;2, 2=&gt;3&#125;, true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> object  = <span class="keyword">new</span> <span class="built_in">Object</span>();</span><br><span class="line"><span class="built_in">console</span>.log(object <span class="keyword">instanceof</span> <span class="built_in">Map</span>); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<h3 id="创建object-vs-Map"><a href="#创建object-vs-Map" class="headerlink" title="创建object vs Map"></a>创建object vs Map</h3><ol>
+<li><p>创建Object</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> object1 = <span class="keyword">new</span> <span class="built_in">Object</span>();</span><br><span class="line"><span class="keyword">const</span> object2 = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> object3 = <span class="built_in">Object</span>.create(<span class="literal">null</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>在通常情况下，与数组相似，尽量避免使用构造函数的方式，理由如下：</p>
+<ul>
+<li>构造函数会写更多代码</li>
+<li>性能更差</li>
+<li>更加混乱更容易引起程序错误，例如：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> <span class="built_in">Object</span>(id: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">"test"</span>) <span class="comment">//显然的语法错误</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj1 = &#123;<span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">"test"</span>&#125;;</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> <span class="built_in">Object</span>(obj1); <span class="comment">//obj1与obj2指向同一个对象</span></span><br><span class="line">obj2.id = <span class="number">2</span>;</span><br><span class="line"><span class="built_in">console</span>.log(obj1.id); <span class="comment">//2</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><p>创建Map：<strong>new Map()</strong>唯一方式</p>
+<p>Map的构造函数<strong>接收一个数组或是一个可遍历的对象</strong>作为参数，这个参数内的数据都为键值对结构。如果是数组，则包含两个元素<code>[key, value]</code></p>
+</li>
+</ol>
+<h3 id="Object-VS-Map-操作异同"><a href="#Object-VS-Map-操作异同" class="headerlink" title="Object VS Map 操作异同"></a>Object VS Map 操作异同</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取元素</span></span><br><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">2</span>,<span class="number">3</span>]]);</span><br><span class="line">map.get(<span class="number">1</span>); <span class="comment">// 2；必须先知道该值所对应的key</span></span><br><span class="line">obj.id <span class="comment">//1</span></span><br><span class="line">obj[<span class="string">'id'</span>] <span class="comment">//1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//插入元素</span></span><br><span class="line">map.set([<span class="number">3</span>,<span class="number">4</span>]);<span class="comment">//如果传入已存在的key，则将会重写该key所对应的value</span></span><br><span class="line">obj[<span class="string">'gender'</span>] = <span class="string">'female'</span>; <span class="comment">//&#123;id: 1, name: "test", gender: "female"&#125;</span></span><br><span class="line">obj.gender = male; <span class="comment">// 重写已存在的属性</span></span><br><span class="line"><span class="comment">//&#123;id: 1, name: "test", gender: "male"&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//判断是否存在某个key</span></span><br><span class="line">map.has(<span class="number">1</span>); </span><br><span class="line"><span class="built_in">Reflect</span>.has(obj,<span class="string">'name'</span>); <span class="comment">//ES6新方法</span></span><br><span class="line"><span class="keyword">var</span> isExist = obj.id === <span class="literal">undefined</span>; </span><br><span class="line"><span class="keyword">var</span> isExist = <span class="string">'id'</span> <span class="keyword">in</span> obj; <span class="comment">// 该方法会检查继承的属性</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//删除某个元素</span></span><br><span class="line"><span class="keyword">const</span> isdelete = map.delete(<span class="number">1</span>);</span><br><span class="line"><span class="built_in">console</span>.log(isdelete); <span class="comment">// true返回的是布尔值，代表操作是否成功</span></span><br><span class="line"><span class="built_in">Reflect</span>.deleteProperty(obj,<span class="string">'name'</span>); <span class="comment">//ES6</span></span><br><span class="line"><span class="keyword">delete</span> obj.id; </span><br><span class="line">obj.id= <span class="literal">undefined</span>;<span class="comment">//指针未删除，用for...in仍旧可以遍历到</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//清除所有</span></span><br><span class="line">map.clear(); <span class="comment">//清空Map所有元素，Object想要清除需要遍历对象逐个删除</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//获取大小</span></span><br><span class="line">map.size();	</span><br><span class="line"><span class="keyword">const</span> size = <span class="built_in">Object</span>.keys(obj).length;</span><br></pre></td></tr></table></figure>
+<h3 id="遍历元素"><a href="#遍历元素" class="headerlink" title="遍历元素"></a>遍历元素</h3><h4 id="Map遍历方法"><a href="#Map遍历方法" class="headerlink" title="Map遍历方法"></a>Map遍历方法</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">map.forEach(<span class="function">(<span class="params">value,key</span>) =&gt;</span> <span class="built_in">console</span>.log(key,value));</span><br><span class="line"></span><br><span class="line"><span class="comment">//For map: &#123; 2 =&gt; 3, 4 =&gt; 5 &#125;</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> map)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item); </span><br><span class="line">    <span class="comment">//Array[2,3]</span></span><br><span class="line">    <span class="comment">//Array[4,5]</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Or</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> [key,value] <span class="keyword">of</span> map)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`key: <span class="subst">$&#123;key&#125;</span>, value: <span class="subst">$&#123;value&#125;</span>`</span>);</span><br><span class="line">    <span class="comment">//key: 2, value: 3</span></span><br><span class="line">    <span class="comment">//key: 4, value: 5</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Object的遍历方法"><a href="#Object的遍历方法" class="headerlink" title="Object的遍历方法"></a>Object的遍历方法</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&#123;id: 1, name: "test"&#125;</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> obj)&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">`key: <span class="subst">$&#123;key&#125;</span>, value: <span class="subst">$&#123;obj[key]&#125;</span>`</span>);</span><br><span class="line">   <span class="comment">//key: id, value: 1</span></span><br><span class="line">   <span class="comment">//key: name, value: test</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.keys(obj).forEach(<span class="function">(<span class="params">key</span>)=&gt;</span> <span class="built_in">console</span>.log(<span class="string">`key: <span class="subst">$&#123;key&#125;</span>, value: <span class="subst">$&#123;obj[key]&#125;</span>`</span>));</span><br><span class="line"><span class="comment">//key: id, value: 1</span></span><br><span class="line"><span class="comment">//key: name, value: test</span></span><br><span class="line"><span class="comment">//还有以下方法：</span></span><br><span class="line"><span class="built_in">Object</span>.getOwnPropertyNames()  </span><br><span class="line"><span class="built_in">Object</span>.getOwnPropertySymbols() </span><br><span class="line"><span class="built_in">Reflect</span>.keys()</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>尽管Map相对于Object有很多优点，依然存在某些使用Object会更好的场景，毕竟Object是JavaScript中最基础的概念。</p>
+<ul>
+<li>如果你知道所有的key，它们都为字符串或整数（或是Symbol类型），你需要一个简单的结构去存储这些数据，Object是一个非常好的选择。构建一个Object并通过知道的特定key获取元素的性能要优于Map（字面量 vs 构造函数，直接获取 vs <code>get()</code>方法）。</li>
+<li>如果需要在对象中保持自己独有的逻辑和属性，只能使用Object。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    id: <span class="number">1</span>, </span><br><span class="line">    name: <span class="string">"It's Me!"</span>, </span><br><span class="line">    print: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">        <span class="keyword">return</span> <span class="string">`Object Id: <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>, with Name: <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(obj.print());<span class="comment">//Object Id: 1, with Name: It's Me.</span></span><br></pre></td></tr></table></figure>
+<p>（你可以使用Map进行尝试，然而Map并不能实现这样的数据结构）</p>
+<ul>
+<li>JSON直接支持Object，但尚未支持Map。因此，在某些我们必须使用JSON的情况下，应将Object视为首选。</li>
+<li>Map是一个纯哈希结构，而Object不是（它拥有自己的内部逻辑）。使用<code>delete</code>对Object的属性进行删除操作存在很多性能问题。所以，针对于存在大量增删操作的场景，使用Map更合适。</li>
+<li>不同于Object，Map会保留所有元素的顺序。Map结构是在基于可迭代的基础上构建的，所以如果考虑到元素迭代或顺序，使用Map更好，它能够确保在所有浏览器中的迭代性能。</li>
+<li>Map在存储大量数据的场景下表现更好，尤其是在key为未知状态，并且所有key和所有value分别为相同类型的情况下</li>
+</ul>
+<p>总结引用<a href="https://juejin.im/post/5c7f6251f265da2dce1f68d3#heading-4" target="_blank" rel="noopener">这里</a>，因为觉得他翻译的已经很好了，以上部分也是由这片文章总结出来的，希望能够帮助到你</p>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Map"><span class="toc-text">Map</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Object"><span class="toc-text">Object</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#区别1："><span class="toc-text">区别1：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建object-vs-Map"><span class="toc-text">创建object vs Map</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Object-VS-Map-操作异同"><span class="toc-text">Object VS Map 操作异同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#遍历元素"><span class="toc-text">遍历元素</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Map遍历方法"><span class="toc-text">Map遍历方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Object的遍历方法"><span class="toc-text">Object的遍历方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/map/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/Object-Map-Array/"><i class="fa fa-tags"></i>Object,Map,Array</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div> -->
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="javascript:void(0);" data-enable="false">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/about-workStyle/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

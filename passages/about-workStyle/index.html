@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>如何让项目变得更加易于维护 | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="typescript,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-08-19
+    </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    如何让项目变得更加易于维护
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="提高代码质量的好处？"><a href="#提高代码质量的好处？" class="headerlink" title="提高代码质量的好处？"></a>提高代码质量的好处？</h2><ul>
+<li>降低维护成本。代码质量差，后续开发很容易写出bug，并且需要花费更多的时间</li>
+<li>提升幸福感。开发人员天天都要和代码打交道，代码质量差会令人烦躁</li>
+</ul>
+<h2 id="这件事与哪些人相关？"><a href="#这件事与哪些人相关？" class="headerlink" title="这件事与哪些人相关？"></a>这件事与哪些人相关？</h2><ul>
+<li>人人有责</li>
+<li>编写代码的人，负责review的人</li>
+</ul>
+<h2 id="一些个人心得体会："><a href="#一些个人心得体会：" class="headerlink" title="一些个人心得体会："></a>一些个人心得体会：</h2><h3 id="1-养成注释的好习惯"><a href="#1-养成注释的好习惯" class="headerlink" title="1.养成注释的好习惯"></a>1.养成注释的好习惯</h3><p>a) 在给老代码进行补充注释时，一定要仔细阅读相关代码，避免因错误或不严谨的注释反而造成后续维护人员的误解</p>
+<p>b) 尽可能避免无意义注释<br><img src="https://cdn.nlark.com/yuque/0/2019/png/345883/1576736435116-c7238362-9249-4bdd-aa35-d0f8f2077022.png#align=left&amp;display=inline&amp;height=525&amp;name=0726-01.png&amp;originHeight=525&amp;originWidth=751&amp;size=102717&amp;status=done&amp;style=none&amp;width=751" alt="0726-01.png"></p>
+<p>c)当因各种各样的原因不得不存在一些会令人迷惑的代码逻辑时，建议补上相关tapd链接或做详细原因说明注释<br><img src="https://cdn.nlark.com/yuque/0/2019/png/345883/1576736484538-46521c49-0853-4b73-9b57-661e7cea2813.png#align=left&amp;display=inline&amp;height=368&amp;name=0726-03.png&amp;originHeight=368&amp;originWidth=751&amp;size=71862&amp;status=done&amp;style=none&amp;width=751" alt="0726-03.png"></p>
+<h3 id="2-养成常量统一配置的习惯（尤其是国家相关配置，统一文件管理）"><a href="#2-养成常量统一配置的习惯（尤其是国家相关配置，统一文件管理）" class="headerlink" title="2.养成常量统一配置的习惯（尤其是国家相关配置，统一文件管理）"></a>2.养成常量统一配置的习惯（尤其是国家相关配置，统一文件管理）</h3><p>M站: common/website.ts<br><img src="https://cdn.nlark.com/yuque/0/2019/png/345883/1576736517015-75bfc8c1-912c-44e6-b15c-772401cf1184.png#align=left&amp;display=inline&amp;height=644&amp;name=0726-06.png&amp;originHeight=644&amp;originWidth=578&amp;size=73754&amp;status=done&amp;style=none&amp;width=578" alt="0726-06.png"></p>
+<h3 id="3-能使用枚举类型的地方不要直接使用字符串或数字进行判断"><a href="#3-能使用枚举类型的地方不要直接使用字符串或数字进行判断" class="headerlink" title="3.能使用枚举类型的地方不要直接使用字符串或数字进行判断"></a>3.能使用枚举类型的地方不要直接使用字符串或数字进行判断</h3><p><img src="https://cdn.nlark.com/yuque/0/2019/png/345883/1576736535927-956a0040-24d7-41be-8cb7-df544c7e1144.png#align=left&amp;display=inline&amp;height=268&amp;name=0726-07.png&amp;originHeight=268&amp;originWidth=779&amp;size=56653&amp;status=done&amp;style=none&amp;width=779" alt="0726-07.png"></p>
+<h3 id="4-避免-无意义的变量名，复杂的三位运算符，函数参数过多，一个方法逻辑过长（可适当拆分，同时起有意义的函数名）等"><a href="#4-避免-无意义的变量名，复杂的三位运算符，函数参数过多，一个方法逻辑过长（可适当拆分，同时起有意义的函数名）等" class="headerlink" title="4.避免 无意义的变量名，复杂的三位运算符，函数参数过多，一个方法逻辑过长（可适当拆分，同时起有意义的函数名）等"></a>4.避免 无意义的变量名，复杂的三位运算符，函数参数过多，一个方法逻辑过长（可适当拆分，同时起有意义的函数名）等</h3><h3 id="5-除引入当前模块下文件外，引入公用组件禁止使用相对路径"><a href="#5-除引入当前模块下文件外，引入公用组件禁止使用相对路径" class="headerlink" title="5.除引入当前模块下文件外，引入公用组件禁止使用相对路径"></a>5.除引入当前模块下文件外，引入公用组件禁止使用相对路径<img src="https://cdn.nlark.com/yuque/0/2019/png/345883/1576736558727-6c25f958-d250-4af5-9b6e-f1ffeb7764bc.png#align=left&amp;display=inline&amp;height=39&amp;name=0726-08.png&amp;originHeight=39&amp;originWidth=609&amp;size=13371&amp;status=done&amp;style=none&amp;width=609" alt="0726-08.png"></h3><h3 id="6-无用代码及时删除，尽量不要仅注释掉，否则长年累月会造成大量无用注释代码。（往往过了一年半载之后自己也不知道这里留着是干什么的了，更不要说如果接手的人看到，会纠结这个东西到底能不能删）重构过的模块老代码也应该直接干掉，同时保留两个目录会提高以后的维护成本，可能会浪费更多时间在找代码上"><a href="#6-无用代码及时删除，尽量不要仅注释掉，否则长年累月会造成大量无用注释代码。（往往过了一年半载之后自己也不知道这里留着是干什么的了，更不要说如果接手的人看到，会纠结这个东西到底能不能删）重构过的模块老代码也应该直接干掉，同时保留两个目录会提高以后的维护成本，可能会浪费更多时间在找代码上" class="headerlink" title="6.无用代码及时删除，尽量不要仅注释掉，否则长年累月会造成大量无用注释代码。（往往过了一年半载之后自己也不知道这里留着是干什么的了，更不要说如果接手的人看到，会纠结这个东西到底能不能删）重构过的模块老代码也应该直接干掉，同时保留两个目录会提高以后的维护成本，可能会浪费更多时间在找代码上"></a>6.无用代码及时删除，尽量不要仅注释掉，否则长年累月会造成大量无用注释代码。（往往过了一年半载之后自己也不知道这里留着是干什么的了，更不要说如果接手的人看到，会纠结这个东西到底能不能删）重构过的模块老代码也应该直接干掉，同时保留两个目录会提高以后的维护成本，可能会浪费更多时间在找代码上</h3><h3 id="7-不要提交无用的commit信息（善用stash或–amend）-同时MR记得带上需求链接（便于追溯）"><a href="#7-不要提交无用的commit信息（善用stash或–amend）-同时MR记得带上需求链接（便于追溯）" class="headerlink" title="7.不要提交无用的commit信息（善用stash或–amend） 同时MR记得带上需求链接（便于追溯）"></a>7.不要提交无用的commit信息（善用stash或–amend） 同时MR记得带上需求链接（便于追溯）</h3><p><img src="https://cdn.nlark.com/yuque/0/2019/png/345883/1576736573592-b27ae6e5-4a86-454c-8fb3-515c2af992d8.png#align=left&amp;display=inline&amp;height=763&amp;name=0726-09.png&amp;originHeight=763&amp;originWidth=744&amp;size=101649&amp;status=done&amp;style=none&amp;width=744" alt="0726-09.png"></p>
+<h3 id="8-避免冗余代码，尽量做到短小精悍，通俗易懂"><a href="#8-避免冗余代码，尽量做到短小精悍，通俗易懂" class="headerlink" title="8.避免冗余代码，尽量做到短小精悍，通俗易懂"></a>8.避免冗余代码，尽量做到短小精悍，通俗易懂</h3><p><img src="https://cdn.nlark.com/yuque/0/2019/png/345883/1576736591994-f72da772-2714-44f9-8be3-9f2f000907e6.png#align=left&amp;display=inline&amp;height=717&amp;name=0726-10.png&amp;originHeight=717&amp;originWidth=689&amp;size=137002&amp;status=done&amp;style=none&amp;width=689" alt="0726-10.png"></p>
+<h3 id="9-超过两遍的代码考虑进行复用，避免大量复制粘贴"><a href="#9-超过两遍的代码考虑进行复用，避免大量复制粘贴" class="headerlink" title="9.超过两遍的代码考虑进行复用，避免大量复制粘贴"></a>9.超过两遍的代码考虑进行复用，避免大量复制粘贴</h3><p>a) 单个函数功能不要过于复杂，尽量根据功能拆分，组合使用</p>
+<p>b) 日常开发需求遇到引起烦躁的重复内容，说明该封装的时候到了，遵循“简单实现、渐进增强”原则</p>
+<p>c) 复用尽量避免大量的if else，不利于维护（影响阅读、容易在进行修改时意外影响到其他部分）</p>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#提高代码质量的好处？"><span class="toc-text">提高代码质量的好处？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#这件事与哪些人相关？"><span class="toc-text">这件事与哪些人相关？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些个人心得体会："><span class="toc-text">一些个人心得体会：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-养成注释的好习惯"><span class="toc-text">1.养成注释的好习惯</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-养成常量统一配置的习惯（尤其是国家相关配置，统一文件管理）"><span class="toc-text">2.养成常量统一配置的习惯（尤其是国家相关配置，统一文件管理）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-能使用枚举类型的地方不要直接使用字符串或数字进行判断"><span class="toc-text">3.能使用枚举类型的地方不要直接使用字符串或数字进行判断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-避免-无意义的变量名，复杂的三位运算符，函数参数过多，一个方法逻辑过长（可适当拆分，同时起有意义的函数名）等"><span class="toc-text">4.避免 无意义的变量名，复杂的三位运算符，函数参数过多，一个方法逻辑过长（可适当拆分，同时起有意义的函数名）等</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-除引入当前模块下文件外，引入公用组件禁止使用相对路径"><span class="toc-text">5.除引入当前模块下文件外，引入公用组件禁止使用相对路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-无用代码及时删除，尽量不要仅注释掉，否则长年累月会造成大量无用注释代码。（往往过了一年半载之后自己也不知道这里留着是干什么的了，更不要说如果接手的人看到，会纠结这个东西到底能不能删）重构过的模块老代码也应该直接干掉，同时保留两个目录会提高以后的维护成本，可能会浪费更多时间在找代码上"><span class="toc-text">6.无用代码及时删除，尽量不要仅注释掉，否则长年累月会造成大量无用注释代码。（往往过了一年半载之后自己也不知道这里留着是干什么的了，更不要说如果接手的人看到，会纠结这个东西到底能不能删）重构过的模块老代码也应该直接干掉，同时保留两个目录会提高以后的维护成本，可能会浪费更多时间在找代码上</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-不要提交无用的commit信息（善用stash或–amend）-同时MR记得带上需求链接（便于追溯）"><span class="toc-text">7.不要提交无用的commit信息（善用stash或–amend） 同时MR记得带上需求链接（便于追溯）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-避免冗余代码，尽量做到短小精悍，通俗易懂"><span class="toc-text">8.避免冗余代码，尽量做到短小精悍，通俗易懂</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-超过两遍的代码考虑进行复用，避免大量复制粘贴"><span class="toc-text">9.超过两遍的代码考虑进行复用，避免大量复制粘贴</span></a></li></ol></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/about-workStyle/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/typescript/"><i class="fa fa-tags"></i>typescript</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div> -->
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/map/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/defineProperty/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="eva">
+  
+  
+  <title>Object的上帝之手之defineProperty | 萌小怪的秘密花园</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Object,defineProperty,">
+  
+
+  
+  <meta name="description" content="萌小怪的小站">
+
+  
+
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+  
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"4QSMsROC8QxawtQM8Px85zd0-gzGzoHsz","appkey":"zfs08wcb14eEy6M5Bk5rAqSG","comment":true,"count":true},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2018-02-10",
+    passwords: ["null", ],
+    is_post: true,
+    lock: false,
+    author: "eva",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/myblog/"
+  };
+</script>
+
+  <script src="/myblog/vendor/sha256.min.js"></script>
+<script src="/myblog/js/auth.js"></script>
+<script src="/myblog/js/index.js"></script>
+<script src="/myblog/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/myblog/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/myblog/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/myblog/css/index.css">
+<link rel="stylesheet" href="/myblog/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/myblog/">萌小怪</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 给自己一片干净的地方</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/myblog/" target="_self">首页</a>
+      
+        <a href="/myblog/archives/" target="_self">归档</a>
+      
+        <a href="/myblog/tags/" target="_self">标签</a>
+      
+        <a href="/myblog/categories/" target="_self">分类</a>
+      
+        <a href="/myblog/friends/" target="_self">友链</a>
+      
+        <a href="/myblog/about/" target="_self">关于</a>
+      
+    </nav>
+    <!-- <div class="site-header-btn"> -->
+      <!-- 
+        <a href="https://github.com/eva1963/" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a> -->
+    <!-- </div> -->
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/myblog/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/myblog/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-07-11
+    </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    Object的上帝之手之defineProperty
+  </h1>
+  
+  <article class="passage-article">
+    <p>defineProperty这个方法现在很多库或者框架都在用，如果不了解这个，可以说连代码都看不懂。</p>
+<p>哪为什么称它为上帝之手，因为可以做非常多的事情，很多库或者框架都是基于这个API而扩展的。</p>
+<p>虽然defineProperty很实用，但是我实际用下来，发现有很多奇怪的地方</p>
+<h4 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h4><p>Object.defineProperty(obj, prop, descriptor)</p>
+<ul>
+<li>obj:[Object] 目标对象</li>
+<li>prop:[String] 要定义或者修改的属性值</li>
+<li>descriptor: 属性描述符，有个6个值，它们有两种主要形式：<strong><em> 数据描述符和存取描述符 ，并且他们不能同时是两者 </em></strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>configurable</th>
+<th>enumerable</th>
+<th>writable</th>
+<th>value</th>
+<th>get</th>
+<th>set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据描述符</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr>
+<td>存取描述符</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p>descriptor什么时候是数据描述符什么时候是存取描述符，这个要看具体的场景，通过上面这个表，可以得知，</p>
+<ul>
+<li>当没有get，set时，那就是数据描述符</li>
+<li>当有get、set时，writable和value不能有值，否则会报错</li>
+</ul>
+<h4 id="数据描述符"><a href="#数据描述符" class="headerlink" title="数据描述符"></a>数据描述符</h4><p>我们先看Object.prototype属性的【默认属性特性】</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(<span class="built_in">Object</span>.prototype,<span class="string">"hasOwnProperty"</span>)</span><br><span class="line"><span class="comment">// 结果</span></span><br><span class="line">&#123; </span><br><span class="line">	value: [<span class="built_in">Function</span>: hasOwnProperty],</span><br><span class="line">	writable: <span class="literal">true</span>,</span><br><span class="line">  	enumerable: <span class="literal">false</span>,</span><br><span class="line">  	configurable: <span class="literal">true</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>[true] writable  属性能否改变</li>
+<li>[false] enumerable 决定是否能被枚举或者说遍历对象的时候属性是否可见</li>
+<li>[true] configurable 特性表示对象的属性是否可以被删除，以及除value和writable特性外的其他特性是否可以被修改</li>
+</ul>
+<p>这是 Object.prototype属性的【默认属性特性】</p>
+<blockquote>
+<p>这三个值很重要，需要彻底搞清楚</p>
+</blockquote>
+<p>普通的对象创建,他们的默认属性特性<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123; <span class="attr">a</span>: <span class="string">"a"</span> &#125;;</span><br><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(obj,<span class="string">"a"</span>);</span><br><span class="line"><span class="comment">// 结果</span></span><br><span class="line">&#123; </span><br><span class="line">	value: <span class="string">'a'</span>,</span><br><span class="line">  	writable: <span class="literal">true</span>,</span><br><span class="line">  	enumerable: <span class="literal">true</span>,</span><br><span class="line">  	configurable: <span class="literal">true</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过defineProperty创建的属性的【默认属性特性】的值又是什么样的尼？<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj,<span class="string">"define"</span>,&#123;</span><br><span class="line">	value:<span class="number">123</span>,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(obj,<span class="string">"define"</span>);</span><br><span class="line"><span class="comment">// 结果</span></span><br><span class="line">&#123; </span><br><span class="line">	value: <span class="number">123</span>,</span><br><span class="line">  	writable: <span class="literal">false</span>,</span><br><span class="line">  	enumerable: <span class="literal">false</span>,</span><br><span class="line">	configurable: <span class="literal">false</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果我们同时打印【Object.prototype、obj】，会输出什么结果尼?</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// demo/1.js</span></span><br><span class="line">log(<span class="number">1</span>,<span class="built_in">Object</span>.prototype);</span><br><span class="line">log(<span class="number">2</span>,<span class="built_in">Object</span>.keys(<span class="built_in">Object</span>.prototype));</span><br><span class="line">log(<span class="number">3</span>,obj);</span><br><span class="line">log(<span class="number">4</span>,<span class="built_in">Object</span>.keys(obj));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果</span></span><br></pre></td></tr></table></figure>
+<p>为什么会这样？因为【enumerable】这个值，它定义是 =&gt; 遍历对象的时候属性是否可见, 当它为【false】时，因为无法遍历到它，所以就不可见了。</p>
+<p><strong><em> 所以在JSON.stringify和Object.assign时，会发现都没有创建的这个define，所以在写 defineProperty 时，一定要想清楚【enumerable】这个值的定义。 </em></strong></p>
+<blockquote>
+<p>可以用propertyIsEnumerable()判断对象的一个属性值是否可枚举</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// demo/2.js</span></span><br><span class="line"><span class="keyword">const</span> obj = &#123; <span class="attr">a</span>: <span class="string">"a"</span> &#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj,<span class="string">"define"</span>,&#123;</span><br><span class="line">	value:<span class="number">123</span>,</span><br><span class="line">&#125;);</span><br><span class="line">log(<span class="string">"defineProperty:"</span>,obj.define,<span class="built_in">JSON</span>.stringify(obj));</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> newObj = <span class="built_in">Object</span>.assign(&#123;<span class="attr">foo</span>:<span class="literal">true</span>&#125;,obj);</span><br><span class="line"></span><br><span class="line">log(<span class="string">"assign:"</span>,newObj.foo,newObj.define,<span class="built_in">JSON</span>.stringify(newObj));</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> newObj2 = <span class="built_in">Object</span>.create(obj,&#123; <span class="attr">foo2</span>: &#123; </span><br><span class="line">    value: <span class="string">"hello"</span> </span><br><span class="line">  &#125;&#125;);</span><br><span class="line"></span><br><span class="line">log(<span class="string">"create:"</span>,newObj2.a,newObj2.define,<span class="built_in">JSON</span>.stringify(newObj2));</span><br><span class="line"></span><br><span class="line">log(<span class="string">"defineProperty"</span>,<span class="built_in">Object</span>.getOwnPropertyDescriptors(obj))</span><br><span class="line">log(<span class="string">"assign"</span>,<span class="built_in">Object</span>.getOwnPropertyDescriptors(newObj))</span><br><span class="line">log(<span class="string">"create"</span>,<span class="built_in">Object</span>.getOwnPropertyDescriptors(newObj2))</span><br></pre></td></tr></table></figure>
+<p>用一个图表来总结各种情况下的默认值吧</p>
+<table>
+<thead>
+<tr>
+<th>场景 (默认)</th>
+<th>enumerable</th>
+<th>writable</th>
+<th>configurable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>直接创建</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>assign</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>defineProperty</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td>create继承</td>
+<td>false</td>
+<td>false</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>assign 只能复制可枚举属性的值</p>
+</blockquote>
+<blockquote>
+<p>TODO：create 会忽略继承的属性，但是直接可以读取，原因目前不是很清楚</p>
+</blockquote>
+<h4 id="存取描述符"><a href="#存取描述符" class="headerlink" title="存取描述符"></a>存取描述符</h4><p>继续思考代码，下面会输出什么？为什么？<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">foo</span>:<span class="string">"foo"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj,<span class="string">"newKey"</span>,&#123;</span><br><span class="line">    <span class="keyword">get</span>:function ()&#123;</span><br><span class="line">        <span class="keyword">return</span> obj.newKey;    </span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">set</span>:function (value)&#123;</span><br><span class="line">        obj.newKey = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">obj.newKey = <span class="number">100</span>;</span><br><span class="line">obj.newKey;</span><br></pre></td></tr></table></figure></p>
+<p>因为get和set会自触发get和set，导致循环引用，超过了栈的阈值。<br>哪正确的用法应该怎么用？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">foo</span>:<span class="string">"foo"</span>&#125;;</span><br><span class="line"><span class="keyword">let</span> getVal = <span class="string">"getval"</span>;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj,<span class="string">"newKey"</span>,&#123;</span><br><span class="line">    <span class="keyword">get</span>:function ()&#123;</span><br><span class="line">        <span class="keyword">return</span> getVal;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">set</span>:function (value)&#123;</span><br><span class="line">        getVal = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>那get和set的应用场景有哪些? 按照他们的特性，拦截、重新定义属性值，那么所有和监控相关，属性复用的场景都可以用defineProperty作为方案使用。</p>
+<ul>
+<li>监控场景：记录每次的操作数据和相应的时间</li>
+</ul>
+<blockquote>
+<p>demo/3.js</p>
+</blockquote>
+<ul>
+<li><p>属性复用场景：继承属性</p>
+<blockquote>
+<p> demo/4.js</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="其他-seal、freeze的总结"><a href="#其他-seal、freeze的总结" class="headerlink" title="其他 seal、freeze的总结"></a>其他 seal、freeze的总结</h4><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>默认值</th>
+<th>seal</th>
+<th>freeze</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>writable</td>
+<td>true</td>
+<td>true</td>
+<td><strong><em> false </em></strong></td>
+</tr>
+<tr>
+<td>enumerable</td>
+<td>true</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>configurable</td>
+<td>true</td>
+<td><strong><em> false </em></strong></td>
+<td><strong><em> false </em></strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>seal之后 当对其defineProperty时，enumerable、configurable变更时会引发错误，writable还是可以正常变更</p>
+</blockquote>
+<blockquote>
+<p>freeze之后 无法对其任何的defineProperty操作</p>
+</blockquote>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#基本语法"><span class="toc-text">基本语法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据描述符"><span class="toc-text">数据描述符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#存取描述符"><span class="toc-text">存取描述符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他-seal、freeze的总结"><span class="toc-text">其他 seal、freeze的总结</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: eva</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://eva1963.win/myblog/passages/defineProperty/</a>
+        </div>
+      
+      <div>
+        
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/myblog/tags/Object-defineProperty/"><i class="fa fa-tags"></i>Object,defineProperty</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div> -->
+    <!-- 
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div> -->
+    <!--  -->
+    <!--  -->
+    <!-- <div class="site-footer-info">
+      <i class="fa fa-copyright"></i> 
+      2019 <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>.
+      Created by Eva.
+      All rights reserved.
+    </div> -->
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      
+        <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+          
+            <div>
+              <img src="/myblog/images/wechat.png" alt="WeChat">
+              
+                <p>WeChat</p>
+              
+            </div>
+          
+            <div>
+              <img src="/myblog/images/alipay.png" alt="AliPay">
+              
+                <p>AliPay</p>
+              
+            </div>
+          
+        </div>
+      
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/myblog/passages/about-workStyle/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/myblog/passages/ts/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    
+      <a href="javascript:void(0);" id="site-reward">
+        <i class="fa fa-thumbs-up"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>
